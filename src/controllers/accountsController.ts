@@ -1,26 +1,30 @@
 import { Request, Response } from 'express';
 import pool from '../config/database';
-import { Account, NewAccount } from '../models/account';
+import { Account, NewAccount } from '../models/Account';
+import { RowDataPacket } from 'mysql2';  // Import RowDataPacket
 
 // Get all accounts
 export const getAccounts = async (req: Request, res: Response) => {
     try {
-        const [accounts] = await pool.query('SELECT * FROM accounts');
+        // Explicitly type the result as an array of RowDataPacket (representing Account[])
+        const [accounts]: [RowDataPacket[], any] = await pool.query('SELECT * FROM accounts');
         res.json(accounts);
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
-// Get account by accountId
+// Get account by ID
 export const getAccount = async (req: Request, res: Response) => {
     const { accountId } = req.params;
     try {
-        const [accounts] = await pool.query('SELECT * FROM accounts WHERE id = ?', [accountId]);
+        // Explicitly type the result as an array of RowDataPacket (representing Account[])
+        const [accounts]: [RowDataPacket[], any] = await pool.query('SELECT * FROM accounts WHERE id = ?', [accountId]);
+
         if (accounts.length === 0) {
             return res.status(404).json({ error: 'Account not found' });
         }
-        res.json(accounts[0]);
+        res.json(accounts[0]);  // Now TypeScript understands the structure
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
@@ -61,6 +65,34 @@ export const deleteAccount = async (req: Request, res: Response) => {
     try {
         await pool.query('DELETE FROM accounts WHERE id = ?', [accountId]);
         res.status(204).send();
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+// Delete an account
+export const getAccount2 = async (req: Request, res: Response) => {
+    const { accountId } = req.params;
+    try {
+        await pool.query('DELETE FROM accounts WHERE id = ?', [accountId]);
+        res.status(204).send();
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+// Get account by ID
+export const getAccount3 = async (req: Request, res: Response) => {
+    const { accountId } = req.params;
+    try {
+        // Explicitly type the result as an array of RowDataPacket (representing Account[])
+        const [accounts]: [RowDataPacket[], any] = await pool.query('SELECT * FROM accounts WHERE id = ?', [accountId]);
+
+        if (accounts.length === 0) {
+            return res.status(404).json({ error: 'Account not found' });
+        }
+        res.json(accounts[0]);  // Now TypeScript understands the structure
+        res.status(200).send();
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }

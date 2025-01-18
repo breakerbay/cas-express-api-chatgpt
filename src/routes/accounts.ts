@@ -1,12 +1,14 @@
 import express from 'express';
-import { getAccounts, getAccount, createAccount, updateAccount, deleteAccount } from '../controllers/accountsController';
+import { Request, Response } from 'express';
+import { getAccounts, getAccount,getAccount2, getAccount3, createAccount, updateAccount, deleteAccount } from '../controllers/accountsController';  // Import controller functions
 
 const router = express.Router();
 
+// Define routes with appropriate controller functions
 router.get('/accounts', getAccounts);
+router.get('/accounts/:accountId', getAccount2);
 router.post('/accounts', createAccount);
 router.put('/accounts/:accountId', updateAccount);
 router.delete('/accounts/:accountId', deleteAccount);
-router.get('/accounts/:accountId', getAccount);
 
 export default router;
