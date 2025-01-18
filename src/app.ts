@@ -5,6 +5,8 @@ import accountsRoutes from './routes/accounts';
 
 dotenv.config();
 
+//TODO Add CORS
+
 const app = express();
 const port = process.env.PORT || 3000;
 

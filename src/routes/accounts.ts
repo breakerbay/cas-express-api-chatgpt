@@ -3,10 +3,6 @@ import { Request, Response } from 'express';
 import {
     getAccounts,
     getAccount,
-    getAccount2,
-    getAccount3,
-    getAccount4,
-    getAccount5,
     createAccount,
     updateAccount,
     deleteAccount,
@@ -16,8 +12,9 @@ import {
 const router = express.Router();
 
 // Define routes with appropriate controller functions
+router.get('/world/:id', getWorld);
 router.get('/accounts', getAccounts);
-router.get('/accounts/:accountId', getAccount5);
+router.get('/accounts/:accountId', getAccount);
 router.post('/accounts', createAccount);
 router.put('/accounts/:accountId', updateAccount);
 router.delete('/accounts/:accountId', deleteAccount);
