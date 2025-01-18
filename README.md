@@ -37,4 +37,29 @@ Details at https://aka.ms/tsconfig
 
 ## References
 
+export interface Account extends RowDataPacket {
+id: number;
+user_id: number;
+type_id: number;
+plan_id: number;
+name: string;
+descr: string;
+dateCreated: Date;
+dateLastModified: Date;
+}
 
+A Mysql database has an accounts table matching the following Typescript interface import {RowDataPacket} from "mysql2";
+
+export interface Account {
+id: number;
+user_id: number;
+type_id: number;
+plan_id: number;
+name: string;
+descr: string;
+dateCreated: Date;
+dateLastModified: Date;
+}
+
+Can you provide the controller getAccount code that would allow the router code router.get('/accounts/:accountId', getAccount);
+To retrieve as json the Account record using the path parameter mapped to the Account.id
