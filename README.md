@@ -48,32 +48,9 @@ Details at https://aka.ms/tsconfig
 sudo /usr/local/mysql/support-files/mysql.server start
 ```
 
-export interface Account extends RowDataPacket {
-id: number;
-user_id: number;
-type_id: number;
-plan_id: number;
-name: string;
-descr: string;
-dateCreated: Date;
-dateLastModified: Date;
-}
+## Model Prompt 1
 
-A Mysql database has an accounts table matching the following Typescript interface import {RowDataPacket} from "mysql2";
-
-export interface Account {
-id: number;
-user_id: number;
-type_id: number;
-plan_id: number;
-name: string;
-descr: string;
-dateCreated: Date;
-dateLastModified: Date;
-}
-
-Can you provide the controller getAccount code that would allow the router code router.get('/accounts/:accountId', getAccount);
-To retrieve as json the Account record using the path parameter mapped to the Account.id
+Following on from the User code above can you also provide Checklist code for the full set of CRUD operations plus PATCH and getAllChecklists using the attached checklist .yaml file as the definition of the Checklist model and place the new checklist code in a separate controller and router?
 
 ## User with Projects
 ```
