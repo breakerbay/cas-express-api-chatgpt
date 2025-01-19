@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import pool from '../config/database';
 import { Account, NewAccount } from '../models/Account';
-import { RowDataPacket } from 'mysql2';  // Import RowDataPacket
+import { RowDataPacket } from 'mysql2';
 
 export const getWorld = async (req: Request, res: Response) => {
     const { id } = req.params; // Retrieve the path parameter `id`
