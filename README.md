@@ -35,6 +35,8 @@ Details at https://aka.ms/tsconfig
 
 * http://localhost:3000/api/accounts
   * http://localhost:3000/api/accounts/1
+* http://localhost:3000/api/projects
+  * http://localhost:3000/api/projects/1
 * http://localhost:3000/api/users
   * http://localhost:3000/api/users/1
 
