@@ -10,19 +10,13 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Enable CORS for all routes
-app.use(cors()); // Use the cors middleware
-
-/**
 const corsOptions = {
-    origin: 'http://example.com', // Replace with your allowed origin
-    methods: 'GET,POST,PUT,DELETE',
+    origin: ['http://localhost', 'https://brogo.net.au/cas2/cas'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    credentials: true,  // Allow sending cookies or authorization headers
 };
 
 app.use(cors(corsOptions));
-
-**/
-
 
 app.use(bodyParser.json());
 app.use('/api', accountsRoutes);

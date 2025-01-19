@@ -33,9 +33,18 @@ Details at https://aka.ms/tsconfig
 
 ## Routes
 
+* http://localhost:3000/api/accounts
+  * http://localhost:3000/api/accounts/1
+* http://localhost:3000/api/users
+  * http://localhost:3000/api/users/1
 
+## MySQL
 
-## References
+## Sart MySQL
+
+```
+sudo /usr/local/mysql/support-files/mysql.server start
+```
 
 export interface Account extends RowDataPacket {
 id: number;
