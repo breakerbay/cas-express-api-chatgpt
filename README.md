@@ -113,6 +113,8 @@ mysql> show tables;
 | Tables_in_checklist2        |
 +-----------------------------+
 | actiontype                  |
+| checklist_groups            |
+| checklist_types             |
 | checkpoint                  |
 | checkpointvalue             |
 | checkpointvalue_followup    |
