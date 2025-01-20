@@ -33,6 +33,9 @@ Details at https://aka.ms/tsconfig
 
 ## Routes
 
+
+* http://localhost:3000/api/actionCategories
+  * http://localhost:3000/api/actionCategories/1
 * http://localhost:3000/api/accounts
   * http://localhost:3000/api/accounts/1
 * http://localhost:3000/api/checklists
@@ -137,7 +140,7 @@ sudo /usr/local/mysql/support-files/mysql.server start
 
 ## Model Prompt 1
 
-Following on from the User code above can you also provide Checklist code for the full set of CRUD operations plus PATCH and getAllChecklists using the attached checklist .yaml file as the definition of the Checklist model and place the new checklist code in a separate controller and router?
+Following the pattern of the above code can you also provide ActionCategory code for the operations defined the attached action-categories.yaml file?
 
 ## User with Projects
 ```
