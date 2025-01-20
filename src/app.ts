@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import actionCategoriesRoutes from "./routes/actionCategoryRoutes";
+import actionTypeRouter from './routes/actionTypeRoutes';
 import accountsRoutes from './routes/accounts';
 import checklistRoutes from './routes/checklistRoutes';
 import projectRouter from './routes/projectRoutes';
@@ -23,6 +24,7 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 app.use('/api', actionCategoriesRoutes);
+app.use('/api', actionTypeRouter);
 app.use('/api', accountsRoutes);
 app.use('/api', checklistRoutes);
 app.use('/api', projectRouter);

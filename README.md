@@ -32,10 +32,20 @@ Details at https://aka.ms/tsconfig
 └── tsconfig.json
 
 ## Routes
+GET /api/actiontypes: Fetch all action types.
 
+POST /api/actiontypes: Create new action types.
+
+GET /api/actiontypes/:id: Fetch a single action type by ID.
+
+GET /api/actiontypes/search/:query: Search for action types by name.
 
 * http://localhost:3000/api/actionCategories
   * http://localhost:3000/api/actionCategories/1
+  * http://localhost:3000/api/actionCategories/search/:query
+* http://localhost:3000/api/actiontypes
+  * http://localhost:3000/api/actiontypes/1 
+  * http://localhost:3000/api/actiontypes/search/:query
 * http://localhost:3000/api/accounts
   * http://localhost:3000/api/accounts/1
 * http://localhost:3000/api/checklists
@@ -112,7 +122,6 @@ mysql> show tables;
 +-----------------------------+
 | Tables_in_checklist2        |
 +-----------------------------+
-| actiontype                  |
 | checklist_groups            |
 | checklist_types             |
 | checkpoint                  |
@@ -141,7 +150,7 @@ sudo /usr/local/mysql/support-files/mysql.server start
 
 ## Model Prompt 1
 
-Following the pattern of the above code can you also provide ActionCategory code for the operations defined the attached action-categories.yaml file?
+Following the pattern of the above code can you also provide Actiontype code for the operations defined the attached action-types.yaml file?
 
 ## User with Projects
 ```
