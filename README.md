@@ -104,6 +104,31 @@ mysql> show tables;
 | worklot                     |
 +-----------------------------+
 
+## TODO - Routes for Tables
+
++-----------------------------+
+| Tables_in_checklist2        |
++-----------------------------+
+| actioncategory              |
+| actiontype                  |
+| checkpoint                  |
+| checkpointvalue             |
+| checkpointvalue_followup    |
+| file                        |
+| followupaction              |
+| job                         |
+| job_checker                 |
+| members                     |
+| milestone                   |
+| places                      |
+| project_checker             |
+| role                        |
+| roles                       |
+| users_roles                 |
+| workarea                    |
+| workarea_checker            |
+| worklot                     |
+
 ## Sart MySQL
 
 ```
