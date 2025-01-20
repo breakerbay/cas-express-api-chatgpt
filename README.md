@@ -35,12 +35,74 @@ Details at https://aka.ms/tsconfig
 
 * http://localhost:3000/api/accounts
   * http://localhost:3000/api/accounts/1
+* http://localhost:3000/api/checklists
+  * http://localhost:3000/api/checklists/1
 * http://localhost:3000/api/projects
-  * http://localhost:3000/api/projects/1
+  * http://localhost:3000/api/projects/4
 * http://localhost:3000/api/users
   * http://localhost:3000/api/users/1
 
 ## MySQL
+
+mysql> show tables;
++-----------------------------+
+| Tables_in_checklist2        |
++-----------------------------+
+| account_job_members         |
+| account_plans               |
+| account_types               |
+| account_users               |
+| accounts                    |
+| actioncategory              |
+| actiontype                  |
+| audit_checkpointvalue       |
+| checker                     |
+| checker_location            |
+| checklist                   |
+| checklist_groups            |
+| checklist_types             |
+| checklistgroup              |
+| checkpoint                  |
+| checkpointvalue             |
+| checkpointvalue_followup    |
+| company                     |
+| file                        |
+| followupaction              |
+| job                         |
+| job_checker                 |
+| job_progress                |
+| job_project_checklist       |
+| job_summary                 |
+| job_workareas_position      |
+| members                     |
+| milestone                   |
+| milestone_jobs              |
+| milestone_subscriber        |
+| organization                |
+| people                      |
+| places                      |
+| places_projects             |
+| places_workareas            |
+| project                     |
+| project_checker             |
+| project_checklist_workareas |
+| project_checklists          |
+| project_checklists_view     |
+| project_customer            |
+| projectaction               |
+| projecthistory              |
+| projectstatus               |
+| role                        |
+| roles                       |
+| user_checklist              |
+| user_role                   |
+| user_worklot                |
+| users                       |
+| users_roles                 |
+| workarea                    |
+| workarea_checker            |
+| worklot                     |
++-----------------------------+
 
 ## Sart MySQL
 
