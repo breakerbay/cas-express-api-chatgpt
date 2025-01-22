@@ -1,0 +1,82 @@
+openapi: 3.0.0
+info:
+  title: User API Definitions
+  version: 1.0.0
+paths: {}
+components:
+  schemas:
+    NewUser:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Molly Murdoch
+        firstName:
+          type: string
+          example: Molly
+        lastName:
+          type: string
+          example: Murdoch
+        username:
+          type: string
+          example: molly
+        password:
+          type: string
+          example: test
+        email:
+          type: string
+          format: email
+          nullable: true
+          example: Molly.Murdoch@hotmail.com
+        mobile:
+          type: string
+          nullable: true
+          example: +64 293584201
+        createdBy:
+          type: integer
+          nullable: true
+          example: 22
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 22
+        name:
+          type: string
+          example: Richard
+        username:
+          type: string
+          example: rich
+        email:
+          type: string
+          format: email
+          nullable: true
+          example: breakerbay@hotmail.com
+        mobile:
+          type: string
+          nullable: true
+          example: +64 272597224
+        createdBy:
+          type: integer
+          nullable: true
+          example: 0
+        dateCreated:
+          type: string
+          format: date-time
+          nullable: true
+          example: 2017-09-20 09:38:49
+        modifiedBy:
+          type: integer
+          nullable: true
+          example: 22
+        dateLastModified:
+          type: string
+          format: date-time
+          nullable: true
+          example: 2023-01-14 19:37:30
+    UserArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
+      description: An array of User objects

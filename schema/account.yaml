@@ -1,0 +1,113 @@
+openapi: 3.0.0
+info:
+  title: Account API Definitions
+  version: 1.0.0
+paths: { }
+components:
+  schemas:
+    NewAccount:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          example: 115
+        type_id:
+          type: integer
+          example: 1
+        plan_id:
+          type: integer
+          example: 2
+        name:
+          type: string
+          example: My Account  (Unlimited)
+        descr:
+          type: string
+          example: My  Unlimited Account
+        on_behalf_id:
+          type: integer
+    Account:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        on_behalf_id:
+          type: integer
+          nullable: true
+        provider_id:
+          type: integer
+          nullable: true
+        type_id:
+          type: integer
+        plan_id:
+          type: integer
+        name:
+          type: string
+        descr:
+          type: string
+          nullable: true
+        place_number:
+          type: integer
+          nullable: true
+        createdBy:
+          type: integer
+          nullable: true
+          example: 22
+        dateCreated:
+          type: string
+          format: date-time
+          nullable: true
+          example: 2017-09-20 09:38:49
+        modifiedBy:
+          type: integer
+          nullable: true
+        dateLastModified:
+          type: string
+          format: date-time
+          nullable: true
+          example: 2022-11-27 11:38:49
+        account_owner:
+          type: string
+          nullable: true
+        on_behalf:
+          type: integer
+          nullable: true
+        provider:
+          type: integer
+          nullable: true
+        createdByUser:
+          type: integer
+          nullable: true
+        modifiedByUser:
+          type: integer
+          nullable: true
+        accountPlan:
+          type: integer
+          nullable: true
+        accountType:
+          type: integer
+          nullable: true
+        project_count:
+          type: integer
+          nullable: true
+        checklist_count:
+          type: integer
+          nullable: true
+    AccountArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Account'
+      description: An array of Accounts objects
+    AccountPlan:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        maxProjects:
+          type: integer

@@ -1,0 +1,121 @@
+openapi: 3.0.0
+info:
+  title: Account API Definitions
+  version: 1.0.0
+paths:
+  /actioncategories:
+    get:
+      summary: Get a list of ActionCategories
+      operationId: getActionCategories
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCategoryArray'
+    post:
+      summary: Create a new ActionCategory
+      operationId: createActionCategory
+      requestBody:
+        description: An array of new ActionCategory records
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewActionCategory'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+      x-codegen-request-body-name: actioncategoryRequest
+  /actioncategories/{id}:
+    get:
+      summary: Get a specific ActionCategory
+      operationId: getActionCategory
+      parameters:
+        - name: id
+          in: path
+          description: ID of the ActionCategory to fetch
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCategory'
+    put:
+      summary: Update an existing ActionCategory
+      operationId: updateActionCategory
+      parameters:
+        - name: id
+          in: path
+          description: ID of the ActionCategory to update
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    delete:
+      summary: Delete an ActionCategory
+      operationId: deleteActionCategory
+      parameters:
+        - name: id
+          in: path
+          description: ID of the ActionCategory to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: No Content
+          content: {}
+  /actioncategories/search/{query}:
+    get:
+      summary: Search for an ActionCategory by Name
+      operationId: findActionCategoryByName
+      parameters:
+        - name: query
+          in: path
+          description: Search for an ActionCategory by Name
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content: {}
+components:
+  schemas:
+    NewActionCategory:
+      type: object
+      properties:
+        name:
+          type: string
+          format: int32
+          nullable: true
+        descr:
+          type: string
+          nullable: true
+    ActionCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+          nullable: true
+        descr:
+          type: string
+          nullable: true
+    ActionCategoryArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/ActionCategory'
+      description: An array of ActionCategory objects

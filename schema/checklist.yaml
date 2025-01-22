@@ -1,0 +1,76 @@
+openapi: 3.0.0
+info:
+  title: Checklist API Definitions
+  version: 1.0.0
+paths: { }
+components:
+  schemas:
+    Checklist:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 3748
+        accountId:
+          type: integer
+          format: int64
+          nullable: true
+          example: 22
+        number:
+          type: integer
+          format: int32
+          nullable: true
+          example: 34
+        copiedFromId:
+          type: integer
+          format: int64
+          nullable: true
+          example:
+        checklistType:
+          type: integer
+          format: int32
+          nullable: true
+          example: 0
+        checklistGroup:
+          type: integer
+          format: int32
+          nullable: true
+          example: 6
+        ownerId:
+          type: integer
+          format: int64
+          nullable: true
+          example:
+        name:
+          type: string
+          nullable: true
+          example: Housing Warrant of Fitness Assessment Criteria
+        descr:
+          type: string
+          nullable: true
+          example: his Checklist defines the complete list of criteria and assessment details for each point described in the criteria list (Appendix A) of the New Zealand Rental Housing WOF.
+        createdBy:
+          type: integer
+          format: int64
+          nullable: true
+          example: 22
+        dateCreated:
+          type: string
+          format: date-time
+          nullable: true
+          example: 2018-06-01 10:58:06
+        modifiedBy:
+          type: integer
+          format: int64
+          nullable: true
+          example: 22
+        dateLastModified:
+          type: string
+          format: date-time
+          nullable: true
+          example: 2018-06-14 10:14:11
+        status:
+          type: integer
+          nullable: true
+

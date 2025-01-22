@@ -1,0 +1,5409 @@
+openapi: 3.0.3
+info:
+  title: Construction Assurance Solutions API
+  description: Improving the quality performance of building and construction projects. 
+    (No CORS headers are defined as CORS is handled by an Apache .htaccess file at the API root level.)
+    Security using JWT is applied to all operations using the security keyword at the root level of the OpenAPI file.
+  version: 1.0.1
+servers:
+- url: https://brogo.net.au/cas2/cas/api
+  description: CAS2 Development server
+- url: https://brogo.net.au/cas/api
+  description: Development server
+- url: http://localhost:3000/cas/api
+  description: Localhost server
+#- url: https://somewhere.api/checklist/api/v1
+security:
+  - JWT: []
+paths:
+  /accounts:
+    get:
+      summary: Get a list of all Accounts
+      description: The following are Test Accounts
+      tags:
+        - Admin Operation
+        - Model - Account
+      operationId: getAccounts
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountArray'
+    post:
+      summary: Create a new User Account
+      tags:
+        - User Operation
+        - User Action 2.1 - Create New Account (TODO - remove call to $http.get('api/users'))
+      operationId: createAccount
+      requestBody:
+        description: Creates a new Account
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewAccount'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+  /accounts/{accountId}:
+    get:
+      summary: Get a specific Account
+      tags:
+        - User Operation
+        - User Action 2.2 - Get Account
+        - Model - Account
+      operationId: getAccount
+      parameters:
+      - name: accountId
+        in: path
+        description: Id of the Account to fetch
+        required: true
+        schema:
+          type: integer
+        examples:
+          home:
+            summary: Richard Hancock 1
+            value: 22
+          checklist-engine:
+            summary: Checklist Engine Web Site
+            value: 89
+          studio:
+            summary: 137 Breaker Bay Studio
+            value: 111
+          main-house:
+            summary: 137A Breaker Bay Main House
+            value: 112
+          shopping-lists:
+            summary: Shopping Lists
+            value: 113
+          web-site:
+            summary: Checklist WebSite
+            value: 114
+          garden:
+            summary: 137 Breaker Bay Garden
+            value: 115
+          to-do:
+            summary: To Do
+            value: 116
+      responses:
+        200:
+          description: Account object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+    put:
+      summary: Create or Update an Account
+      tags:
+        - User Operation
+        - User Action 2.3 - Update Account
+        - Model - Account
+      operationId: updateAccounts
+      parameters:
+      - name: accountId
+        in: path
+        description: Id of the Accounts to update
+        required: true
+        schema:
+          type: integer
+        example: 179
+      requestBody:
+        description: Updates an existing Account
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - modifiedBy
+              properties:
+                type_id:
+                  description: Account Type can be either 1 to indicate a "Personal Account", 2 to indicate an Organization Account or 3 to indicate a public domain account that allows public access.
+                  type: integer
+                  format: int32
+                  enum:
+                    - 1
+                    - 2
+                    - 3
+                  example: 1
+                plan_id:
+                  description: Account Plan can be either 1 to indicate a "Free Plan" or 2 to indicate an "Unlimited Plan"
+                  type: integer
+                  format: int32
+                  enum:
+                    - 1
+                    - 2
+                  example: 2
+                name:
+                  type: string
+                  example: My Updated Account
+                descr:
+                  type: string
+                  example: My Recently Updated Account
+                modifiedBy:
+                  type: integer
+                  format: int64
+                  example: 120
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewAccount'
+    patch:
+      summary: Update an existing Account
+      tags:
+        - User Operation
+        - User Action 2.3 - Update Account
+        - Model - Account
+      operationId: updateAccounts
+      parameters:
+        - name: accountId
+          in: path
+          description: Id of the Accounts to update
+          required: true
+          schema:
+            type: integer
+          example: 179
+      requestBody:
+        description: Updates an existing Account
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - modifiedBy
+              properties:
+                type_id:
+                  description: Account Type can be either 1 to indicate a "Personal Account", 2 to indicate an Organization Account or 3 to indicate a public domain account that allows public access.
+                  type: integer
+                  format: int32
+                  enum:
+                    - 1
+                    - 2
+                    - 3
+                  example: 1
+                plan_id:
+                  description: Account Plan can be either 1 to indicate a "Free Plan" or 2 to indicate an "Unlimited Plan"
+                  type: integer
+                  format: int32
+                  enum:
+                    - 1
+                    - 2
+                  example: 2
+                name:
+                  type: string
+                  example: My Updated Account
+                descr:
+                  type: string
+                  example: My Recently Updated Account
+                modifiedBy:
+                  type: integer
+                  format: int64
+                  example: 120
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewAccount'
+    delete:
+      summary: Delete an Account
+      tags:
+        - Model - Account
+      operationId: deleteAccounts
+      parameters:
+      - name: accountId
+        in: path
+        description: accountId of the Accounts to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No Content
+          content: {}
+  /accounts/{accountId}/projects:
+    get:
+      summary: Get a list of Projects for this Account, returned as an array.
+      tags:
+        - Admin Operation
+        - User Operation
+        - User Action 3 - Get Account Projects (TODO - Remove redunant getUsers call)
+        - Model - Project
+      operationId: getAccountProjects
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: integer
+          examples:
+            home:
+              summary: Richard Hancock 1
+              value: 22
+            checklist-engine:
+              summary: Checklist Engine Web Site
+              value: 89
+            studio:
+              summary: 137 Breaker Bay Studio
+              value: 111
+            main-house:
+              summary: 137A Breaker Bay Main House
+              value: 112
+            shopping-lists:
+              summary: Shopping Lists
+              value: 113
+            web-site:
+              summary: Checklist WebSite
+              value: 114
+            garden:
+              summary: 137 Breaker Bay Garden
+              value: 115
+            to-do:
+              summary: To Do
+              value: 116
+      responses:
+        200:
+          description: OK
+          content: { }
+    post:
+      summary: Create a new Account Project
+      tags:
+        - User Operation
+        - Model - Project
+      operationId: createAccountProject
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: integer
+            example: 171
+      requestBody:
+        description: A NewProject record
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewProject'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: { }
+  /accounts/{accountId}/checkers/{checkerId}/followupactions/{followupactionId}:
+    get:
+      summary: Get a FollowupAction for an Account Checker
+      tags:
+        - User Operation
+        - Checker Operation
+      operationId: getCheckerFollowupAction
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id for the nominated Account
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 22
+        - name: checkerId
+          in: path
+          description: Checker Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 22
+        - name: followupactionId
+          in: path
+          description: FollowupAction Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 302
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowupAction'
+              examples:
+                followupAction:
+                  summary: FollowupAction - Required Properties
+                  value: {"id":302,"projectId":299,"checkpointValueId":165132,"name":"cp1 Followup","descr":"cp1 Followup","dateRaised": "2023-08-28 00:55:49"}
+    put:
+      summary: An Account Checker Updates a FollowupAction
+      tags:
+        - User Operation
+        - Checker Operation
+      operationId: updateFollowupAction
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id for the nominated Account
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 22
+        - name: checkerId
+          in: path
+          description: Checker Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 22
+        - name: followupactionId
+          in: path
+          description: FollowupAction Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 302
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowupAction'
+              examples:
+                followupAction:
+                  summary: FollowupAction - Required Properties
+                  value: {"id":302,"projectId":299,"checkpointValueId":165132,"name":"cp1 Followup","descr":"cp1 Followup","dateRaised": "2023-08-28 00:55:49"}
+  /accounts/{accountId}/checkers/{checkerId}/checkpointvalues/{checkpointvalueId}:
+    post:
+      summary: Assign an Account Checker to a CheckpointValue
+      tags:
+        - User Operation
+        - Checker Operation
+      operationId: assignChecker2CheckpointValue
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 22
+        - name: checkerId
+          in: path
+          description: Checker Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 22
+        - name: checkpointvalueId
+          in: path
+          description: CheckpointValue Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 165132
+      responses:
+        201:
+          description: Checker assigned to CheckpointValue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckpointValue'
+  /accounts/{accountId}/checkers/{checkerId}/checkpointvalues/{checkpointvalueId}/complete:
+    post:
+      summary: Set a CheckpointValue as complete
+      tags:
+        - User Operation
+        - Checker Operation
+      operationId: setCheckpointValueComplete
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 22
+        - name: checkerId
+          in: path
+          description: Checker Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 22
+        - name: checkpointvalueId
+          in: path
+          description: CheckpointValue Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 165132
+      responses:
+        201:
+          description: CheckpointValue set as complete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckpointValue'
+  /accounts/{accountId}/checkers/{checkerId}/checkpointvalues/{checkpointvalueId}/followupaction:
+    post:
+      summary: An Account Checker adds a FollowupAction to a CheckpointValue
+      tags:
+        - User Operation
+        - Checker Operation
+        - Model - FollowupAction
+      operationId: addFollowupAction
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 22
+        - name: checkerId
+          in: path
+          description: Checker Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 22
+        - name: checkpointvalueId
+          in: path
+          description: CheckpointValue Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 165132
+      requestBody:
+        description: Add a new FollowupAction
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewFollowupAction'
+        required: true
+      responses:
+        201:
+          description: FollowupAction added to a CheckpointValue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckpointValue'
+  /accounts/{accountId}/checkers/{checkerId}/jobs/{jobId}:
+    post:
+      summary: Assign an Account Checker to a ProjectChecklist (Job)
+      tags:
+        - User Operation
+        - Checker Operation
+      operationId: assignChecker2ProjectChecklist
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 22
+        - name: checkerId
+          in: path
+          description: Checker Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 22
+        - name: jobId
+          in: path
+          description: ProjectChecklist (Job) Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 165132
+      responses:
+        201:
+          description: Checker assigned to ProjectChecklist (Job)
+          content:
+            application/json:
+              schema: {}
+  /accounts/{accountId}/checkers/{checkerId}/workareas/{workareaId}:
+    post:
+      summary: Assign an Account Checker to a Workarea
+      tags:
+        - User Operation
+        - Checker Operation
+      operationId: assignChecker2Workarea
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 22
+        - name: checkerId
+          in: path
+          description: Checker Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 22
+        - name: workareaId
+          in: path
+          description: Workarea Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 165132
+      responses:
+        201:
+          description: Checker assigned to Workarea
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workarea'
+  /accounts/{accountId}/projects/{projectNumber}:
+    get:
+      summary: Get a Project for the nominated Account by its projectNumber
+      tags:
+        - User Operation
+        - User Action 4 - getAccountProject
+      operationId: getAccountProject
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id for the nominated Account
+          required: true
+          schema:
+            type: integer
+          examples:
+            home:
+              summary: Richard Hancock 1
+              value: 22
+            checklist-engine:
+              summary: Checklist Engine Web Site
+              value: 89
+            studio:
+              summary: 137 Breaker Bay Studio
+              value: 111
+            main-house:
+              summary: 137A Breaker Bay Main House
+              value: 112
+            shopping-lists:
+              summary: Shopping Lists
+              value: 113
+            web-site:
+              summary: Checklist WebSite
+              value: 114
+            garden:
+              summary: 137 Breaker Bay Garden
+              value: 115
+            to-do:
+              summary: To Do
+              value: 116
+            annie:
+              value: 171
+            mike:
+              value: 164
+        - name: projectNumber
+          in: path
+          description: The project number of the Project (projectNumber is unqiue within an Account)
+          required: true
+          schema:
+            type: integer
+            example: 2
+#            examples:
+#              annie:
+#                value: 1
+#              mike:
+#                value: 2
+        - name: details
+          in: query
+          description: Provide additional Project details
+          required: false
+          schema:
+            type: string
+            enum: [ all ]
+            example: all
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/project.yaml#/components/schemas/Project'
+              examples:
+                project:
+                  summary: Base Project
+                  value:
+                    - {"id":452,"accountId":22,"number":30,"name":"137A Breaker Bay Road - Healthy Homes inspection 2022","descr":"Health Homes Inspection in accordance with specified criteria","statusId":null,"milestoneStatus":null,"place_number":null,"createdBy":22,"createdByUser":"rich","dateCreated":"2023-01-05 07:21:49","modifiedBy":22,"modifiedByUser":"rich","dateLastModified":"2023-01-05 07:42:38"}
+#                  externalValue:  './examples/accounts-22-projects-12.json'
+#                   externalValue Not supported by SwaggerUI
+                projectDetails:
+                  summary: Project with query details=all
+                  value:
+                    - {"id":452,"accountId":22,"number":30,"name":"137A Breaker Bay Road - Healthy Homes inspection 2022","descr":"Health Homes Inspection in accordance with specified criteria","statusId":null,"milestoneStatus":null,"place_number":null,"createdBy":22,"createdByUser":"rich","dateCreated":"2023-01-05 07:21:49","modifiedBy":22,"modifiedByUser":"rich","dateLastModified":"2023-01-05 07:42:38","checklists":[{"checklistNumber":82,"checklistId":4248,"checklistName":"P30-Lounge Bay Window - draft sealing-82","jobId":2551,"jobName":"Lounge Bay Window - draft sealing","checkpoints":[{"id":95158,"copiedFromId":95150,"checkpointType":1,"parentId":0,"checklistId":4248,"milestoneId":0,"position":1,"name":"Upper left opening window","descr":"Upper left opening window as viewed from inside the house looking outwards.","label":null,"createdBy":22,"dateCreated":"2023-01-05 07:23:29","modifiedBy":null,"dateLastModified":null,"checkpoints":[{"id":95159,"copiedFromId":95151,"checkpointType":3,"parentId":95158,"checklistId":0,"milestoneId":0,"position":1,"name":"Gap between window and sill is less than 3mm.","descr":"As a rule of thumb, gaps or holes with a width greater than 3mm in or around the walls, ceilings, windows, doors and floors that let air into or out of the home will usually require blocking to prevent unreasonable draughts. This means that if the edge of a New Zealand $2 dollar coin can fit in the gap, then the gap needs to be sealed. Refer  https://www.tenancy.govt.nz/assets/Uploads/files/healthy-homes-standards-draught-stopping.pdf","label":null,"createdBy":22,"dateCreated":"2023-01-05 07:23:29","modifiedBy":null,"dateLastModified":null}]},{"id":95160,"copiedFromId":95152,"checkpointType":1,"parentId":0,"checklistId":4248,"milestoneId":0,"position":2,"name":"Lower left opening window","descr":"Lower left opening window as viewed from inside the house looking outwards.","label":null,"createdBy":22,"dateCreated":"2023-01-05 07:23:29","modifiedBy":null,"dateLastModified":null,"checkpoints":[{"id":95161,"copiedFromId":95153,"checkpointType":3,"parentId":95160,"checklistId":0,"milestoneId":0,"position":1,"name":"Gap between window and sill is less than 3mm","descr":"As a rule of thumb, gaps or holes with a width greater than 3mm in or around the walls, ceilings, windows, doors and floors that let air into or out of the home will usually require blocking to prevent unreasonable draughts. This means that if the edge of a New Zealand $2 dollar coin can fit in the gap, then the gap needs to be sealed. Refer  https: / /www.tenancy.govt.nz /assets /Uploads /files /healthy-homes-standards-draught-stopping.pdf","label":null,"createdBy":22,"dateCreated":"2023-01-05 07:23:29","modifiedBy":null,"dateLastModified":null}]},{"id":95162,"copiedFromId":95154,"checkpointType":1,"parentId":0,"checklistId":4248,"milestoneId":0,"position":3,"name":"Upper right opening window","descr":"","label":null,"createdBy":22,"dateCreated":"2023-01-05 07:23:29","modifiedBy":null,"dateLastModified":null,"checkpoints":[{"id":95163,"copiedFromId":95156,"checkpointType":3,"parentId":95162,"checklistId":0,"milestoneId":0,"position":1,"name":"Gap between window and sill is less than 3 mm","descr":"As a rule of thumb, gaps or holes with a width greater than 3mm in or around the walls, ceilings, windows, doors and floors that let air into or out of the home will usually require blocking to prevent unreasonable draughts. This means that if the edge of a New Zealand $2 dollar coin can fit in the gap, then the gap needs to be sealed. Refer  https: / /www.tenancy.govt.nz /assets /Uploads /files /healthy-homes-standards-draught-stopping.pdf","label":null,"createdBy":22,"dateCreated":"2023-01-05 07:23:29","modifiedBy":null,"dateLastModified":null}]},{"id":95164,"copiedFromId":95155,"checkpointType":1,"parentId":0,"checklistId":4248,"milestoneId":0,"position":4,"name":"Lower right opening window","descr":"As a rule of thumb, gaps or holes with a width greater than 3mm in or around the walls, ceilings, windows, doors and floors that let air into or out of the home will usually require blocking to prevent unreasonable draughts. This means that if the edge of a New Zealand $2 dollar coin can fit in the gap, then the gap needs to be sealed. Refer  https: / /www.tenancy.govt.nz /assets /Uploads /files /healthy-homes-standards-draught-stopping.pdf","label":null,"createdBy":22,"dateCreated":"2023-01-05 07:23:29","modifiedBy":null,"dateLastModified":null,"checkpoints":[{"id":95165,"copiedFromId":95157,"checkpointType":3,"parentId":95164,"checklistId":0,"milestoneId":0,"position":1,"name":"Gap between window and sill is less than 3 mm","descr":"As a rule of thumb, gaps or holes with a width greater than 3mm in or around the walls, ceilings, windows, doors and floors that let air into or out of the home will usually require blocking to prevent unreasonable draughts. This means that if the edge of a New Zealand $2 dollar coin can fit in the gap, then the gap needs to be sealed. Refer  https: / /www.tenancy.govt.nz /assets /Uploads /files /healthy-homes-standards-draught-stopping.pdf","label":null,"createdBy":22,"dateCreated":"2023-01-05 07:23:29","modifiedBy":null,"dateLastModified":null}]}]}]}
+#                   externalValue: ./accounts-22-projects-12-detail-all.json
+#                   externalValue Not supported by SwaggerUI
+  /accounts/{accountId}/checklists:
+    get:
+      summary: Get a list of Checklists for this Account, returned as an array.
+      tags:
+        - User Operation
+      operationId: getAccountChecklists
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: integer
+          examples:
+            home:
+              summary: Richard Hancock 1
+              value: 22
+            checklist-engine:
+              summary: Checklist Engine Web Site
+              value: 89
+            studio:
+              summary: 137 Breaker Bay Studio
+              value: 111
+            main-house:
+              summary: 137A Breaker Bay Main House
+              value: 112
+            shopping-lists:
+              summary: Shopping Lists
+              value: 113
+            web-site:
+              summary: Checklist WebSite
+              value: 114
+            garden:
+              summary: 137 Breaker Bay Garden
+              value: 115
+            to-do:
+              summary: To Do
+              value: 116
+      responses:
+        200:
+          description: Returns an array of Checklists linked to the Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistArray'
+              examples:
+                checklists:
+                  summary: Array of Checklists
+                  value:
+                      - {"id":4044,"name":"Account Checklist","descr":"A test checklist for verifying the setup of a Checklist Engine account .","accountId":89,"checklistGroup":0,"groupName":"Unknown","checklistType":2,"typeName":"Project","copiedFromId":-1,"number":1,"status":null,"createdBy":22,"createdByUser":"rich","dateCreated":"2020-08-30 06:50:21","modifiedBy":22,"modifiedByUser":"rich","dateLastModified":"2021-04-04 04:00:06"}
+                      - {"id":4063,"name":"P3-Account Checklist-2","descr":"(Imported)","accountId":89,"checklistGroup":0,"groupName":"Unknown","checklistType":2,"typeName":"Project","copiedFromId":4044,"number":2,"status":null,"createdBy":89,"createdByUser":"billy","dateCreated":"2020-09-27 02:16:27","modifiedBy":null,"modifiedByUser":null,"dateLastModified":null}
+  /accounts/{accountId}/checklists/{checklistNumber}:
+    get:
+      summary: Get an Account Checklist by its checklist Number
+      tags:
+        - User Operation
+#        - User Action 4 - getAccountProject
+      operationId: getAccountChecklist
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id for the nominated Account
+          required: true
+          schema:
+            type: integer
+            example: 164  # Mikes Checklist "P2-3-09 Pavement Prime/Primer Seal/Bitument Sealing-44"
+        - name: checklistNumber
+          in: path
+          description: The number of the Checklist (checklistNumber is unqiue within an Account)
+          required: true
+          schema:
+            type: integer
+            example: 38
+        - name: details
+          in: query
+          description: Provide additional Checklist details
+          required: false
+          schema:
+            type: string
+            enum: [ all, checkpoints  ]
+            example: all
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/project.yaml#/components/schemas/Project'
+              examples:
+                project:
+                  summary: Base Project
+                  value:
+                    - {"id":452,"accountId":22,"number":30,"name":"137A Breaker Bay Road - Healthy Homes inspection 2022","descr":"Health Homes Inspection in accordance with specified criteria","statusId":null,"milestoneStatus":null,"place_number":null,"createdBy":22,"createdByUser":"rich","dateCreated":"2023-01-05 07:21:49","modifiedBy":22,"modifiedByUser":"rich","dateLastModified":"2023-01-05 07:42:38"}
+                #                  externalValue:  './examples/accounts-22-projects-12.json'
+                #                   externalValue Not supported by SwaggerUI
+                projectDetails:
+                  summary: Project with query details=all
+                  value:
+                    - {"id":452,"accountId":22,"number":30,"name":"137A Breaker Bay Road - Healthy Homes inspection 2022","descr":"Health Homes Inspection in accordance with specified criteria","statusId":null,"milestoneStatus":null,"place_number":null,"createdBy":22,"createdByUser":"rich","dateCreated":"2023-01-05 07:21:49","modifiedBy":22,"modifiedByUser":"rich","dateLastModified":"2023-01-05 07:42:38","checklists":[{"checklistNumber":82,"checklistId":4248,"checklistName":"P30-Lounge Bay Window - draft sealing-82","jobId":2551,"jobName":"Lounge Bay Window - draft sealing","checkpoints":[{"id":95158,"copiedFromId":95150,"checkpointType":1,"parentId":0,"checklistId":4248,"milestoneId":0,"position":1,"name":"Upper left opening window","descr":"Upper left opening window as viewed from inside the house looking outwards.","label":null,"createdBy":22,"dateCreated":"2023-01-05 07:23:29","modifiedBy":null,"dateLastModified":null,"checkpoints":[{"id":95159,"copiedFromId":95151,"checkpointType":3,"parentId":95158,"checklistId":0,"milestoneId":0,"position":1,"name":"Gap between window and sill is less than 3mm.","descr":"As a rule of thumb, gaps or holes with a width greater than 3mm in or around the walls, ceilings, windows, doors and floors that let air into or out of the home will usually require blocking to prevent unreasonable draughts. This means that if the edge of a New Zealand $2 dollar coin can fit in the gap, then the gap needs to be sealed. Refer  https: / /www.tenancy.govt.nz /assets /Uploads /files /healthy-homes-standards-draught-stopping.pdf","label":null,"createdBy":22,"dateCreated":"2023-01-05 07:23:29","modifiedBy":null,"dateLastModified":null}]},{"id":95160,"copiedFromId":95152,"checkpointType":1,"parentId":0,"checklistId":4248,"milestoneId":0,"position":2,"name":"Lower left opening window","descr":"Lower left opening window as viewed from inside the house looking outwards.","label":null,"createdBy":22,"dateCreated":"2023-01-05 07:23:29","modifiedBy":null,"dateLastModified":null,"checkpoints":[{"id":95161,"copiedFromId":95153,"checkpointType":3,"parentId":95160,"checklistId":0,"milestoneId":0,"position":1,"name":"Gap between window and sill is less than 3mm","descr":"As a rule of thumb, gaps or holes with a width greater than 3mm in or around the walls, ceilings, windows, doors and floors that let air into or out of the home will usually require blocking to prevent unreasonable draughts. This means that if the edge of a New Zealand $2 dollar coin can fit in the gap, then the gap needs to be sealed. Refer  https: / /www.tenancy.govt.nz /assets /Uploads /files /healthy-homes-standards-draught-stopping.pdf","label":null,"createdBy":22,"dateCreated":"2023-01-05 07:23:29","modifiedBy":null,"dateLastModified":null}]},{"id":95162,"copiedFromId":95154,"checkpointType":1,"parentId":0,"checklistId":4248,"milestoneId":0,"position":3,"name":"Upper right opening window","descr":"","label":null,"createdBy":22,"dateCreated":"2023-01-05 07:23:29","modifiedBy":null,"dateLastModified":null,"checkpoints":[{"id":95163,"copiedFromId":95156,"checkpointType":3,"parentId":95162,"checklistId":0,"milestoneId":0,"position":1,"name":"Gap between window and sill is less than 3 mm","descr":"As a rule of thumb, gaps or holes with a width greater than 3mm in or around the walls, ceilings, windows, doors and floors that let air into or out of the home will usually require blocking to prevent unreasonable draughts. This means that if the edge of a New Zealand $2 dollar coin can fit in the gap, then the gap needs to be sealed. Refer  https: / /www.tenancy.govt.nz /assets /Uploads /files /healthy-homes-standards-draught-stopping.pdf","label":null,"createdBy":22,"dateCreated":"2023-01-05 07:23:29","modifiedBy":null,"dateLastModified":null}]},{"id":95164,"copiedFromId":95155,"checkpointType":1,"parentId":0,"checklistId":4248,"milestoneId":0,"position":4,"name":"Lower right opening window","descr":"As a rule of thumb, gaps or holes with a width greater than 3mm in or around the walls, ceilings, windows, doors and floors that let air into or out of the home will usually require blocking to prevent unreasonable draughts. This means that if the edge of a New Zealand $2 dollar coin can fit in the gap, then the gap needs to be sealed. Refer  https: / /www.tenancy.govt.nz /assets /Uploads /files /healthy-homes-standards-draught-stopping.pdf","label":null,"createdBy":22,"dateCreated":"2023-01-05 07:23:29","modifiedBy":null,"dateLastModified":null,"checkpoints":[{"id":95165,"copiedFromId":95157,"checkpointType":3,"parentId":95164,"checklistId":0,"milestoneId":0,"position":1,"name":"Gap between window and sill is less than 3 mm","descr":"As a rule of thumb, gaps or holes with a width greater than 3mm in or around the walls, ceilings, windows, doors and floors that let air into or out of the home will usually require blocking to prevent unreasonable draughts. This means that if the edge of a New Zealand $2 dollar coin can fit in the gap, then the gap needs to be sealed. Refer  https: / /www.tenancy.govt.nz /assets /Uploads /files /healthy-homes-standards-draught-stopping.pdf","label":null,"createdBy":22,"dateCreated":"2023-01-05 07:23:29","modifiedBy":null,"dateLastModified":null}]}]}]}
+    post:
+      summary: Create a new Checklist in this Account.
+      tags:
+        - User Operation
+      operationId: createAccountChecklist
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: integer
+            example: 22
+        - name: checklistNumber
+          in: path
+          description: The number of the Checklist (checklistNumber is unqiue within an Account)
+          required: true
+          schema:
+            type: integer
+            example: 38            
+      responses:
+        201:
+          description: Returns the new Checklist created in this Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistArray'
+  /accounts/{accountId}/projects/{projectNumber}/workareas/{number}:
+    get:
+      summary: Get the Workarea for this Account Project, identified by its unique Workarea number
+      tags:
+        - User Operation
+      operationId: getAccountProjectWorkArea
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: integer
+            example: 22
+        - name: projectNumber
+          in: path
+          description: Project number which uniquely identifies a Project within the Account
+          required: true
+          schema:
+            type: integer
+            example: 6
+        - name: number
+          in: path
+          description: Workarea number which uniquely identifies a Workarea within the Account and linked to the Project
+          required: true
+          schema:
+            type: integer
+            example: 2
+      responses:
+        200:
+          description: Returns the Workarea identified by the Workarea number which is unique within the Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workarea'
+  /accounts/{accountId}/workareas:
+    get:
+      summary: Get the Workareas for this Account
+      tags:
+        - User Operation
+      operationId: getAccountWorkAreas
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: integer
+          examples:
+            home:
+              summary: Richard Hancock 1
+              value: 22
+            checklist-engine:
+              summary: Checklist Engine Web Site
+              value: 89
+            studio:
+              summary: 137 Breaker Bay Studio
+              value: 111
+            main-house:
+              summary: 137A Breaker Bay Main House
+              value: 112
+            shopping-lists:
+              summary: Shopping Lists
+              value: 113
+            web-site:
+              summary: Checklist WebSite
+              value: 114
+            garden:
+              summary: 137 Breaker Bay Garden
+              value: 115
+            to-do:
+              summary: To Do
+              value: 116
+      responses:
+        200:
+          description: Returns an array of the Workareas linked to the Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkareaArray'
+  /accounts/{accountId}/workareas/{number}:
+    get:
+      summary: Get the Workarea for this Account, identified by its unique Workarea number
+      tags:
+        - User Operation
+      operationId: getAccountWorkArea
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: integer
+          examples:
+            home:
+              summary: Richard Hancock 1
+              value: 22
+            checklist-engine:
+              summary: Checklist Engine Web Site
+              value: 89
+            studio:
+              summary: 137 Breaker Bay Studio
+              value: 111
+            main-house:
+              summary: 137A Breaker Bay Main House
+              value: 112
+            shopping-lists:
+              summary: Shopping Lists
+              value: 113
+            web-site:
+              summary: Checklist WebSite
+              value: 114
+            garden:
+              summary: 137 Breaker Bay Garden
+              value: 115
+            to-do:
+              summary: To Do
+              value: 116
+        - name: number
+          in: path
+          description: Workarea number which uniquely identifies a Workarea within the Account
+          required: true
+          schema:
+            type: integer
+            example: 2
+      responses:
+        200:
+          description: Returns the Workarea identified by the Workarea number which is unique within the Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workarea'
+  /accountplans:
+    get:
+      summary: Get a list of AccountPlans
+      operationId: getAccountPlans
+      responses:
+        200:
+          description: OK
+          content: {}
+  /accounttypes:
+    get:
+      summary: Get a list of AccountTypes
+      operationId: getAccountTypes
+      responses:
+        200:
+          description: OK
+          content: {}
+  /actioncategories:
+    get:
+      summary: Get a list of ActionCategories
+      operationId: getActionCategories
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCategoryArray'
+    post:
+      summary: Create a new ActionCategory
+      operationId: createActionCategory
+      requestBody:
+        description: An array of new ActionCategory records
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewActionCategory'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+      x-codegen-request-body-name: actioncategoryRequest
+  /actioncategories/{id}:
+    get:
+      summary: Get a specific ActionCategory
+      operationId: getActionCategory
+      parameters:
+      - name: id
+        in: path
+        description: ID of the ActionCategory to fetch
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionCategory'
+    put:
+      summary: Update an existing ActionCategory
+      operationId: updateActionCategory
+      parameters:
+      - name: id
+        in: path
+        description: ID of the ActionCategory to update
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    delete:
+      summary: Delete an ActionCategory
+      operationId: deleteActionCategory
+      parameters:
+      - name: id
+        in: path
+        description: ID of the ActionCategory to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No Content
+          content: {}
+  /actioncategories/search/{query}:
+    get:
+      summary: Search for an ActionCategory by Name
+      operationId: findActionCategoryByName
+      parameters:
+        - name: query
+          in: path
+          description: Search for an ActionCategory by Name
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content: {}
+  /actiontypes:
+    get:
+      summary: Get a list of Actiontypes
+      operationId: getActiontypes
+      responses:
+        200:
+          description: OK
+          content: {}
+    post:
+      summary: Create a new Actiontype
+      operationId: createActiontype
+      requestBody:
+        description: An array of new Actiontype records
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActiontypeRequest'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+      x-codegen-request-body-name: actiontypeRequest
+  /actiontypes/{id}:
+    get:
+      summary: Get a specific Actiontype
+      operationId: getActionType
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Actiontype to fetch
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+  /actiontypes/search/{query}:
+    get:
+      summary: Search for an ActionType by Name
+      operationId: findActionTypeByName
+      parameters:
+        - name: query
+          in: path
+          description: Search for an ActionType by Name
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content: {}
+  /checkers/{checkerId}/projects:
+    get:
+      summary: Get projects allocated to a specific Checker
+      tags:
+        - User Operation
+        - Checker Operation
+        - Model - FollowupAction
+      operationId: getCheckerProjects
+      parameters:
+      - name: checkerId
+        in: path
+        description: Id of the Checker to fetch
+        required: true
+        schema:
+          type: integer
+          example: 22
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckerProjectArray'
+  /checkers/{checkerId}/projects/{projectId}:
+    get:
+      summary: Get a project allocated to a Checker, add query parameters to get additional details
+      tags:
+        - Checker Operation
+        - Model - Checker
+        - Model - Project
+        - Model - VerificationPoint
+        - Model - FollowupAction
+        - Model - Images
+      description: Get a project allocated to a Checker
+      operationId: getCheckerProject
+      parameters:
+        - name: checkerId
+          in: path
+          description: Id of the Checker
+          required: true
+          schema:
+            type: integer
+            example: 22
+        - name: projectId
+          in: path
+          description: Id of the Project
+          required: true
+          schema:
+            type: integer
+          examples:
+            hold-points:
+              summary: Hold Points Project (Owner - Richard Hancock)
+              value: 312
+            photo-testing:
+              summary: Photo Testing Project (Owner - John Anderson)
+              value: 416
+        - name: details
+          in: query
+          description: Add verification details to Project. Images related to the verification points will be included.
+          required: false
+          schema:
+            type: string
+            enum:
+              - all
+            example: all
+        - name: assigned
+          in: query
+          description: Only provide the verification points assigned to the nominated Checker
+          required: false
+          schema:
+            type: boolean
+            enum:
+              - true
+              - false
+#            example: false
+        - name: criteria
+          in: query
+          description: Add criteria to the verification points
+          required: false
+          schema:
+            type: boolean
+            enum:
+              - true
+              - false
+#            example: false
+        - name: followupActions
+          in: query
+          description: Add followupActions to the verification points. Images related to the followupActions will be included.
+          required: false
+          schema:
+            type: boolean
+            enum:
+              - true
+              - false
+#            example: false
+      responses:
+        200:
+          description: OK
+          content: {}
+  /checklists:
+    get:
+      summary: Get a list of Checklists, retrieved by page number
+      tags:
+        - Admin Operation
+      operationId: getChecklistsByPage
+      parameters:
+        - name: page
+          in: query
+          description: Page number of the Checklists to fetch
+          required: false
+          schema:
+            type: integer
+        - name: size
+          in: query
+          description: Size of the Page, i.e. number of Checklists to fetch per page
+          required: false
+          schema:
+            type: integer
+        - name: like
+          in: query
+          description: Filter by Checklist name matching the like condition
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistArray'
+    post:
+      summary: Create a new Checklist
+      operationId: createChecklist
+      requestBody:
+        description: An array of new Checklist records
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChecklistRequest'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+  /checklists/{id}:
+    get:
+      summary: Get a specific Checklist
+      tags:
+        - Admin Operation
+      operationId: getChecklist
+      parameters:
+      - name: id
+        in: path
+        description: Id of the Checklist to fetch
+        required: true
+        schema:
+          type: integer
+        example: 4489  # Mikes Checklist "P2-3-09 Pavement Prime/Primer Seal/Bitument Sealing-44"
+#        example: 3748
+      - name: details
+        in: query
+        description: Provide additional Project details
+        required: false
+        schema:
+          type: string
+          enum: [ all ]
+          example: all
+      responses:
+        200:
+          description: Successful request, Checklist returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Checklist'
+    put:
+      summary: Update an existing Checklist
+      operationId: updateChecklist
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Checklist to update
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    delete:
+      summary: Delete a Checklist
+      operationId: deleteChecklist
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Checklist to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No Content
+          content: {}
+  /checklists/search/{query}:
+    get:
+      summary: Find Checklist names matching the search criteria
+      operationId: findChecklists
+      parameters:
+        - name: query
+          in: path
+          description: Checklist name search criteria
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Array of Checklist names matching the search criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistNameArray'
+  /checklistgroups:
+    get:
+      summary: Get a array of ChecklistGroups
+      operationId: getChecklistgroups
+      responses:
+        200:
+          description: Array of ChecklistGroups
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistGroupArray'
+    post:
+      summary: Create a new ChecklistGroup
+      operationId: createChecklistgroup
+      requestBody:
+        description: A new ChecklistGroup record
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewChecklistGroup'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+      x-codegen-request-body-name: checklistgroupRequest
+  /checklistgroups/{id}:
+    get:
+      summary: Get a specific ChecklistGroup
+      operationId: 'getChecklistgroup'
+      parameters:
+      - name: id
+        in: path
+        description: Id of the Checklistgroup to fetch
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: ChecklistGroup matching the provided Id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistGroup'
+    put:
+      summary: Update an existing Checklistgroup
+      operationId: updateChecklistgroup
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Checklistgroup to update
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    delete:
+      summary: Delete a Checklistgroup
+      operationId: deleteChecklistgroup
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Checklistgroup to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No Content
+          content: {}
+  /checklistgroups/find/{query}:
+    get:
+      summary: Find ChecklistGroup names matching the search criteria
+      operationId: findByChecklistGroupName
+      parameters:
+        - name: query
+          in: path
+          description: ChecklistGroup name search criteria
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Array of ChecklistGroups matching the search criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistGroupArray'
+  /checklisttypes:
+    get:
+      summary: Get anarray of ChecklistTypes
+      operationId: getChecklistTypes
+      responses:
+        200:
+          description: Array of ChecklistTypes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistTypeArray'
+    post:
+      summary: Create a new ChecklistType
+      operationId: createChecklistTypes
+      requestBody:
+        description: A new ChecklistType
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChecklistType'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+      x-codegen-request-body-name: checklisttypesRequest
+  /checklisttypes/{id}:
+    get:
+      summary: Get a specific ChecklistTypes
+      operationId: getChecklistType
+      parameters:
+      - name: id
+        in: path
+        description: Id of the ChecklistType to fetch
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: ChecklistType retrieved by the provided Id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistType'
+    put:
+      summary: Update an existing ChecklistTypes
+      operationId: updateChecklistTypes
+      parameters:
+      - name: id
+        in: path
+        description: ID of the ChecklistTypes to update
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    delete:
+      summary: Delete a ChecklistTypes
+      operationId: deleteChecklistTypes
+      parameters:
+      - name: id
+        in: path
+        description: ID of the ChecklistTypes to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No Content
+          content: {}
+  /checkpoints:
+    get:
+      summary: Get a list of Checkpoints
+      tags:
+        - Deprecated Operation
+      operationId: getCheckpoints
+      deprecated: true
+      responses:
+        200:
+          description: OK
+          content: {}
+    post:
+      summary: Create a new Checkpoint
+      tags:
+        - Deprecated Operation
+      operationId: createCheckpoint
+      deprecated: true
+      requestBody:
+        description: New Checkpoint record
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Checkpoint'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+      x-codegen-request-body-name: checkpointRequest
+  /checkpoints/{id}:
+    get:
+      summary: Get a specific Checkpoint
+      tags:
+        - Maintenance Operation
+      operationId: getCheckpoint
+      parameters:
+      - name: id
+        in: path
+        description: id of the Checkpoint to fetch
+        required: true
+        schema:
+          type: integer
+        example:
+          85686
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Checkpoint'
+    put:
+      summary: Update an existing Checkpoint
+      tags:
+        - Deprecated Operation
+      operationId: updateCheckpoint
+      deprecated: true
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Checkpoint to update
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    delete:
+      summary: Delete a Checkpoint
+      tags:
+        - Deprecated Operation
+      operationId: deleteCheckpoint
+      deprecated: true
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Checkpoint to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No Content
+          content: {}
+  /checkpointvalues:
+    get:
+      summary: Get a list of Checkpointvalues
+      tags:
+        - Deprecated Operation
+      operationId: getCheckpointvalues
+      deprecated: true
+      responses:
+        200:
+          description: OK
+          content: {}
+    post:
+      summary: Create a new Checkpointvalue
+      operationId: createCheckpointvalue
+      requestBody:
+        description: An array of new Checkpointvalue records
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckpointValue'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+      x-codegen-request-body-name: checkpointvalueRequest
+  /checkpointvalues/{id}:
+    get:
+      summary: Get a specific Checkpointvalue
+      operationId: getCheckpointvalue
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Checkpointvalue to fetch
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckpointValue'
+    put:
+      summary: Update an existing Checkpointvalue
+      operationId: updateCheckpointvalue
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Checkpointvalue to update
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    delete:
+      summary: Delete a Checkpointvalue
+      operationId: deleteCheckpointvalue
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Checkpointvalue to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No Content
+          content: {}
+  /criteria/{parentId}:
+    get:
+      summary: Get Criteria objects for a Checkpoint using the Checkpoint id as the parentId
+      tags:
+        - Deprecated Operation
+      operationId: getCriteria
+      deprecated: true
+      parameters:
+        - name: parentId
+          in: path
+          description: parentId of the Criteria to fetch
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Criteria objects
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CriteriaArray'
+  /followupactions/{id}:
+    get:
+      summary: Get a specific Followupaction
+      tags:
+        - User Operation
+        - Checker Operation
+        - Model - FollowupAction
+      operationId: getFollowupAction
+      parameters:
+      - name: id
+        in: path
+        description: Id of the FollowupAction to fetch
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowupAction'
+  /jobs/{id}:
+    put:
+      summary: Update an existing Job
+      operationId: updateJob
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Job to update
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+    delete:
+      summary: Delete a Job
+      operationId: deleteJob
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Job to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No Content
+          content: {}
+  /members:
+    get:
+      summary: Get a list of Members
+      operationId: getMembers
+      responses:
+        200:
+          description: OK
+          content: {}
+    post:
+      summary: Create a new Members
+      operationId: createMembers
+      requestBody:
+        description: An array of new Members records
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MembersRequest'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+      x-codegen-request-body-name: membersRequest
+  /members/{id}:
+    get:
+      summary: Get a specific Members
+      operationId: getMembersById
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Members to fetch
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    put:
+      summary: Update an existing Members
+      operationId: updateMembers
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Members to update
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    delete:
+      summary: Delete a Members
+      operationId: deleteMembers
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Members to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No Content
+          content: {}
+  /milestones:
+    get:
+      summary: Get a list of Milestones
+      operationId: getMilestones
+      responses:
+        200:
+          description: OK
+          content: {}
+    post:
+      summary: Create a new Milestone
+      operationId: createMilestone
+      requestBody:
+        description: An array of new Milestone records
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MilestoneRequest'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+      x-codegen-request-body-name: milestoneRequest
+  /milestones/{id}:
+    get:
+      summary: Get a specific Milestone
+      operationId: getMilestoneById
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Milestone to fetch
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    put:
+      summary: Update an existing Milestone
+      operationId: updateMilestone
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Milestone to update
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    delete:
+      summary: Delete a Milestone
+      operationId: deleteMilestone
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Milestone to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No Content
+          content: {}
+  /peoples:
+    get:
+      summary: Get a list of Peoples
+      operationId: getPeoples
+      responses:
+        200:
+          description: OK
+          content: {}
+    post:
+      summary: Create a new People
+      operationId: createPeople
+      requestBody:
+        description: An array of new People records
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PeopleRequest'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+      x-codegen-request-body-name: peopleRequest
+  /peoples/{id}:
+    get:
+      summary: Get a specific People
+      operationId: getPeopleById
+      parameters:
+      - name: id
+        in: path
+        description: ID of the People to fetch
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    put:
+      summary: Update an existing People
+      operationId: updatePeople
+      parameters:
+      - name: id
+        in: path
+        description: ID of the People to update
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    delete:
+      summary: Delete a People
+      operationId: deletePeople
+      parameters:
+      - name: id
+        in: path
+        description: ID of the People to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No Content
+          content: {}
+  /accounts/{accountId}/places:
+    get:
+      summary: Get a list of Places linked to this Account
+      tags:
+        - User Operation
+        - Model - Place
+      operationId: getAccountPlaces
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: integer
+            example: 22
+          examples:
+            home:
+              summary: Richard Hancock 1
+              value: 22
+            checklist-engine:
+              summary: Checklist Engine Web Site
+              value: 89
+            studio:
+              summary: 137 Breaker Bay Studio
+              value: 111
+            main-house:
+              summary: 137A Breaker Bay Main House
+              value: 112
+            shopping-lists:
+              summary: Shopping Lists
+              value: 113
+            web-site:
+              summary: Checklist WebSite
+              value: 114
+            garden:
+              summary: 137 Breaker Bay Garden
+              value: 115
+            to-do:
+              summary: To Do
+              value: 116
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaceArray'
+    post:
+      summary: Create a new Place (Location) linked to the Account
+      tags:
+        - User Operation
+        - Model - Place
+      operationId: createAccountPlace
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: integer
+            example: 22
+      requestBody:
+        description: New Place to be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPlace'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+  /accounts/{accountId}/places/{number}:
+    get:
+      summary: Get a Place linked to the Account
+      tags:
+        - User Operation
+      operationId: getAccountPlace
+      parameters:
+      - name: accountId
+        in: path
+        description: ID of the Account
+        required: true
+        schema:
+          type: integer
+        examples:
+          home:
+            summary: Richard Hancock 1
+            value: 22
+          checklist-engine:
+            summary: Checklist Engine Web Site
+            value: 89
+          studio:
+            summary: 137 Breaker Bay Studio
+            value: 111
+          main-house:
+            summary: 137A Breaker Bay Main House
+            value: 112
+          shopping-lists:
+            summary: Shopping Lists
+            value: 113
+          web-site:
+            summary: Checklist WebSite
+            value: 114
+          garden:
+            summary: 137 Breaker Bay Garden
+            value: 115
+          to-do:
+            summary: To Do
+            value: 116
+      - name: number
+        in: path
+        description: Number of the Place to get.
+        required: true
+        schema:
+          type: integer
+          example: 1
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Place'
+    put:
+      summary: Update an existing Places
+      tags:
+        - User Operation
+      operationId: updatePlaces
+      parameters:
+        - name: accountId
+          in: path
+          description: ID of the Account
+          required: true
+          example: 22
+          schema:
+            type: integer
+        - name: number
+          in: path
+          description: Number of the Place to get.
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        description: Place to be updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Place'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Place'
+    delete:
+      summary: Delete a Places
+      operationId: deletePlaces
+      parameters:
+      - name: accountId
+        in: path
+        description: ID of the Account
+        required: true
+        schema:
+          type: integer      
+      - name: number
+        in: path
+        description: Number of the Place to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No Content
+          content: {}
+  /projects:
+    get:
+      summary: Get a list of Projects
+      tags:
+        - Admin Operation
+      operationId: getProjectsByPage
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectArray'
+  /projects/{id}:
+    get:
+      summary: Get a specific Project
+      tags:
+        - Admin Operation
+      operationId: getProject
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Project to fetch
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+    put:
+      summary: Update an existing Project
+      tags:
+        - Admin Operation
+      operationId: updateProject
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Project to update
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    delete:
+      summary: Delete a Project
+      tags:
+        - Admin Operation
+      operationId: deleteProject
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Project to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No Content
+          content: {}
+  /roles:
+    get:
+      summary: Get a list of Roles
+      operationId: getRoles
+      responses:
+        200:
+          description: OK
+          content: {}
+    post:
+      summary: Create a new Roles
+      operationId: createRoles
+      requestBody:
+        description: An array of new Roles records
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RolesRequest'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+      x-codegen-request-body-name: rolesRequest
+  /roles/{id}:
+    get:
+      summary: Get a specific Roles
+      operationId: getRolesById
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Roles to fetch
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    put:
+      summary: Update an existing Roles
+      operationId: updateRoles
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Roles to update
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    delete:
+      summary: Delete a Roles
+      operationId: deleteRoles
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Roles to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No Content
+          content: {}
+  /users:
+    get:
+      summary: Get a list of all Users
+      tags:
+        - Admin Operation
+      operationId: getUsers
+      responses:
+        200:
+          description: Array of Users
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/user.yaml#/components/schemas/UserArray'
+    post:
+      summary: Create a new User and their Home (Personal) Account. Replaced by User Registration
+      operationId: createUserAccount
+      tags:
+        - Deprecated Operation
+      deprecated: true
+      requestBody:
+        description: Minimal definition of a new User
+        content:
+          application/json:
+            schema:
+              $ref: './schemas/user.yaml#/components/schemas/NewUser'  # Relative path to external schema
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+
+  /users/registration:
+    post:
+      summary: New User registration. The User's Home (Personal) Account is also created as part of this operation.
+      tags:
+        - User Operation
+      security: []  # No security requirement for this operation
+      operationId: createNewUserAccount
+      requestBody:
+        required: true
+        description: Minimal definition of a new User
+        content:
+          application/json:
+            schema:
+#              $ref: '#/components/schemas/NewUser'                    # Relative path to internal schema
+              $ref: './schemas/user.yaml#/components/schemas/NewUser'  # Relative path to external schema
+            examples:
+              molly:
+                summary: Molly Murdoch
+                value:
+                  name: Molly Murdoch
+                  firstName: Molly
+                  lastName: Murdoch
+                  username: molly
+                  password: test
+                  email: Molly.Murdoch@hotmail.com
+                  mobile: +64 29358420
+                  createdBy: 22
+              larry:
+                summary: Larry Murdoch
+                value:
+                  name: Larry Murdoch
+                  firstName: Larry
+                  lastName: Murdoch
+                  username: larry
+                  password: test
+                  email: Larry.Murdoch@hotmail.com
+                  mobile: +64 29358421
+                  createdBy: 22
+      responses:
+        201:
+          description: Created
+          content: {}
+
+  /users/{id}:
+    get:
+      summary: Get a specific User
+      tags:
+        - User Operation
+        - Admin Operation
+        - User Action 1 - Signin
+      operationId: getUser
+      parameters:
+      - name: id
+        in: path
+        description: Id of the User to fetch
+        required: true
+        schema:
+          type: integer
+        examples:
+            john:
+              summary: John Anderson
+              value: 13
+            elliott:
+              summary: Michael Evans
+              value: 15
+            robb:
+              summary: Rob Beasley 1
+              value: 21
+            robby:
+              summary: Rob Beasley
+              value: 43
+            rich:
+              summary: Richard Hancock
+              value: 22
+            annie:
+              summary: Annie Murdoch
+              value: 120
+            molly:
+              summary: Molly Murdoch
+              value: 121
+      responses:
+        200:
+          description: User object retrieved
+          content:
+            application/json:
+              schema:
+#                $ref: '#/components/schemas/User'
+                $ref: './schemas/user.yaml#/components/schemas/User'
+        '400':
+          $ref: './msd-api-common-components.yaml#/components/responses/BadRequest'
+#          description: Bad Request
+#          content:
+#            application/json:
+#              schema:
+#                $ref: './msd-api-common-components.yaml#/components/schemas/BadRequest'
+        '404':
+          $ref: './msd-api-common-components.yaml#/components/responses/NotFound'
+#          content:
+#            application/json:
+#              examples:
+#                userNotFound:
+#                  $ref: '#/components/examples/UserNotFound'
+#          description: User not found
+    put:
+      summary: Update an existing User
+      tags:
+        - User Operation
+      operationId: updateUserDetails
+      parameters:
+      - name: id
+        in: path
+        description: Id of the Users to update
+        example: 22
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Update the User's details
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Larry Murdoch
+                username:
+                  type: string
+                  example: larry
+                email:
+                  type: string
+                  format: email
+                  nullable: true
+                  example: Larry.Murdoch@hotmail.com
+                mobile:
+                  type: string
+                  nullable: true
+                  example: +64 293584201
+        required: true
+      responses:
+        200:
+          description: OK
+          content: {}
+    delete:
+      summary: Delete a User
+      tags:
+        - User Operation
+        - Admin Operation
+      operationId: deleteUser
+      parameters:
+      - name: id
+        in: path
+        description: Id of the User to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No Content
+          content: {}
+  /users/{id}/accounts:
+    get:
+      summary: Get an array of the User Accounts
+      tags:
+        - User Operation
+        - User Action 2 - Get User Accounts
+      operationId: getUserAccounts
+      parameters:
+        - name: id
+          in: path
+          description: User Id
+          required: true
+          schema:
+            type: integer
+          examples:
+            john:
+              summary: John Anderson
+              value: 13
+            elliott:
+              summary: Michael Evans
+              value: 15
+            robb:
+              summary: Rob Beasley 1
+              value: 21
+            robby:
+              summary: Rob Beasley
+              value: 43
+            rich:
+              summary: Richard Hancock
+              value: 22
+            annie:
+              summary: Annie Murdoch
+              value: 120
+            molly:
+              summary: Molly Murdoch
+              value: 121
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/account.yaml#/components/schemas/AccountArray'
+  /users/{id}/projects:
+    get:
+      summary: Get an array of all of Projects where the user is a Checker. Deprecated. Replaced by getCheckerProjects
+      tags:
+        - Deprecated Operation
+      operationId: getUserProjects
+      deprecated: true
+      parameters:
+        - name: id
+          in: path
+          description: User Id
+          required: true
+          schema:
+            type: integer
+          examples:
+            john:
+              summary: John Anderson
+              value: 13
+            elliott:
+              summary: Michael Evans
+              value: 15
+            robb:
+              summary: Rob Beasley 1
+              value: 21
+            robby:
+              summary: Rob Beasley
+              value: 43
+            rich:
+              summary: Richard Hancock
+              value: 43
+            annie:
+              summary: Annie Murdoch
+              value: 120
+            molly:
+              summary: Molly Murdoch
+              value: 121
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectArray'
+  /users/search/{query}:
+    get:
+      summary: Search Users by Name, matching on LIKE name and ordering by Name
+      tags:
+        - User Operation
+        - Admin Operation
+      operationId: searchUsersByName
+      parameters:
+        - name: query
+          in: path
+          description: Matches query to similar names
+          required: true
+          schema:
+            type: string
+          examples:
+            Larry:
+              value: Larry
+            Molly:
+              value: Molly
+            Murdoch:
+              value: Murdoch
+            Rich:
+              value: Rich
+      responses:
+        200:
+          description: User object retrieved
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/user.yaml#/components/schemas/UserArray'
+        '404':
+          description: User not found
+  /users/find/{query}:
+    get:
+      summary: Returns the User whose username is an exact match for the input query
+      tags:
+        - User Operation
+      operationId: findByUserName
+      parameters:
+        - name: query
+          in: path
+          description: Value to match against User username
+          required: true
+          schema:
+            type: string
+            example: rich
+      responses:
+        200:
+          description: User object retrieved
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/user.yaml#/components/schemas/User'
+        '404':
+          description: User not found
+  /users/email/{query}:
+    get:
+      summary: Returns the User whose email is an exact match for the input query
+      tags:
+        - User Operation
+      operationId: findByEmail
+      parameters:
+        - name: query
+          in: path
+          description: Value to match against User email
+          required: true
+          schema:
+            type: string
+            example: example@hotmail.com
+      responses:
+        200:
+          description: User object retrieved
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/user.yaml#/components/schemas/User'
+        '404':
+          description: User not found
+  /users/mobile/{query}:
+    get:
+      summary: Returns the User whose mobile phone number is an exact match for the input query
+      tags:
+        - User Operation
+      operationId: findByMobile
+      parameters:
+        - name: query
+          in: path
+          description: Value to match against User mobile phone number
+          required: true
+          schema:
+            type: string
+            example: +64 427 259 7224
+      responses:
+        200:
+          description: User object retrieved
+          content:
+            application/json:
+              schema:
+                $ref: './schemas/user.yaml#/components/schemas/UserArray'
+        404:
+          description: User not found
+  /workareas:
+    get:
+      summary: Get a list of Workareas
+      operationId: getWorkareas
+      responses:
+        200:
+          description: OK
+          content: {}
+    post:
+      summary: Create a new Workarea
+      operationId: createWorkarea
+      requestBody:
+        description: An array of new Workarea records
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Workarea'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+      x-codegen-request-body-name: workareaRequest
+  /workareas/{id}:
+    get:
+      summary: Get a specific Workarea
+      operationId: getWorkareaById
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Workarea to fetch
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    put:
+      summary: Update an existing Workarea
+      operationId: updateWorkarea
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Workarea to update
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    delete:
+      summary: Delete a Workarea
+      operationId: deleteWorkarea
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Workarea to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No Content
+          content: {}
+  /worklots:
+    get:
+      summary: Get a list of Worklots
+      operationId: getWorklots
+      responses:
+        200:
+          description: OK
+          content: {}
+    post:
+      summary: Create a new Worklot
+      operationId: createWorklot
+      requestBody:
+        description: An array of new Worklot records
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorklotRequest'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+      x-codegen-request-body-name: worklotRequest
+  /worklots/{id}:
+    get:
+      summary: Get a specific Worklot
+      operationId: getWorklotById
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Worklot to fetch
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    put:
+      summary: Update an existing Worklot
+      operationId: updateWorklot
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Worklot to update
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    delete:
+      summary: Delete a Worklot
+      operationId: deleteWorklot
+      parameters:
+      - name: id
+        in: path
+        description: ID of the Worklot to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        204:
+          description: No Content
+          content: {}
+components:
+  securitySchemes:
+    JWT:
+      description: JWT tokens will be passed in the Authorization header with the Bearer keyword.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    NewAccount:
+      type: object
+      required:
+        - user_id
+        - type_id
+        - plan_id
+        - name
+        - createdBy
+      properties:
+        user_id:
+          type: integer
+          format: int64
+          example: 120
+        type_id:
+          description: Account Type can be either 1 to indicate a "Personal Account", 2 to indicate an Organization Account or 3 to indicate a public domain account that allows public access.
+          type: integer
+          format: int32
+          enum:
+            - 1
+            - 2
+            - 3
+          example: 1
+        plan_id:
+          description: Account Plan can be either 1 to indicate a "Free Plan" or 2 to indicate an "Unlimited Plan"
+          type: integer
+          format: int32
+          enum:
+            - 1
+            - 2
+          example: 2
+        name:
+          type: string
+          example: My New Account  (Unlimited)
+        descr:
+          type: string
+          example: My New Unlimited Account
+        createdBy:
+          type: integer
+          format: int64
+          example: 120
+    Account:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        user_id:
+          type: integer
+          format: int64
+        on_behalf_id:
+          type: integer
+          format: int64
+          nullable: true
+        provider_id:
+          type: integer
+          format: int64
+          nullable: true
+        type_id:
+          type: integer
+          format: int32
+        plan_id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        descr:
+          type: string
+          nullable: true
+        place_number:
+          type: integer
+          format: int64
+          nullable: true
+        createdBy:
+          type: integer
+          nullable: true
+        dateCreated:
+          type: string
+          format: date-time
+          nullable: true
+          example: 2017-09-20 09:38:49
+        modifiedBy:
+          type: integer
+          format: int64
+          nullable: true
+        dateLastModified:
+          type: string
+          format: date-time
+          nullable: true
+          example: 2022-11-27 11:38:49
+        account_owner:
+          type: string
+          nullable: true
+        on_behalf:
+          type: integer
+          nullable: true
+        provider:
+          type: integer
+          nullable: true
+        createdByUser:
+          type: integer
+          nullable: true
+        modifiedByUser:
+          type: integer
+          format: int64
+          nullable: true
+        accountPlan:
+          type: integer
+          format: int32
+          nullable: true
+        accountType:
+          type: integer
+          format: int32
+          nullable: true
+        project_count:
+          type: integer
+          format: int32
+          nullable: true
+        checklist_count:
+          type: integer
+          format: int32
+          nullable: true
+    AccountArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Account'
+      description: An array of Accounts objects
+    AccountPlan:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        maxProjects:
+          type: integer
+          format: int32
+    AccountType:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+          nullable: true
+        descr:
+          type: string
+          nullable: true
+    NewActionCategory:
+      type: object
+      properties:
+        name:
+          type: string
+          format: int32
+          nullable: true
+        descr:
+          type: string
+          nullable: true
+    ActionCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+          nullable: true
+        descr:
+          type: string
+          nullable: true
+    ActionCategoryArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/ActionCategory'
+      description: An array of ActionCategory objects
+    Actiontype:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+          nullable: true
+        descr:
+          type: string
+          nullable: true
+    ActiontypeRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Actiontype'
+      description: An array of Actiontype objects
+    ActiontypeResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Actiontype'
+      description: An array of Actiontype objects
+    Checker:
+      description: A User acting in the role of a Checker is assigned to Projects to verify that project work is completed to the expected standard as defined in the Checklists.
+      allOf:
+        - $ref: '#/components/schemas/User'
+#    "accountName": "John Anderson",
+#    "accountUserId": "13",
+#    "accountOwner": "John Anderson"
+    CheckerProject:
+      type: object
+      required:
+        - id
+        - accountId
+        - name
+        - number
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 416
+        status:
+          type: integer
+          nullable: true
+        statusId:
+          type: integer
+          nullable: true
+        milestoneStatus:
+          type: integer
+          nullable: true
+        name:
+          type: string
+          example: Photo Testing Project
+        descr:
+          type: string
+          example: Project based on house inspection
+          nullable: true
+        createdBy:
+          type: integer
+          format: int64
+          nullable: true
+        dateCreated:
+          type: string
+          format: date-time
+          nullable: true
+        modifiedBy:
+          type: integer
+          format: int64
+          nullable: true
+        dateLastModified:
+          type: string
+          format: date-time
+          nullable: true
+        accountId:
+          type: integer
+          format: int64
+          example: 13
+        number:
+          type: integer
+          format: int32
+          example: 5
+        place_number:
+          type: integer
+          format: int64
+          nullable: true
+        accountName:
+          type: string
+          example: John Anderson
+        accountOwner:
+          type: string
+          example: John Anderson
+        accountUserId:
+          type: integer
+          format: int64
+          example: 13
+    CheckerProjectArray:
+      description: An array of CheckerProject objects
+      type: array
+      items:
+        $ref: '#/components/schemas/CheckerProject'
+    CheckerLocation:
+      type: object
+      properties:
+        ID:
+          type: integer
+        JobID:
+          type: integer
+          nullable: true
+        UserName:
+          type: string
+          nullable: true
+        LastupDate:
+          type: string
+          nullable: true
+        Latitude:
+          type: number
+          nullable: true
+        Longitude:
+          type: number
+          nullable: true
+    CheckerLocationRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckerLocation'
+      description: An array of CheckerLocation objects
+    CheckerLocationResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckerLocation'
+      description: An array of CheckerLocation objects
+    ChecklistName:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 38
+        name:
+          type: string
+          example: 4-03  External Services - Stormwater
+    ChecklistNameArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/ChecklistName'
+    Checklist:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 3748
+        copiedFromId:
+          type: integer
+          format: int64
+          nullable: true
+          example:
+        checklistType:
+          type: integer
+          format: int32
+          nullable: true
+          example: 0
+        checklistGroup:
+          type: integer
+          format: int32
+          nullable: true
+          example: 6
+        ownerId:
+          type: integer
+          format: int64
+          nullable: true
+          example:
+        providerId:
+          type: integer
+          format: int64
+          nullable: true
+          example:
+        orgId:
+          type: integer
+          format: int64
+          nullable: true
+          example:
+        name:
+          type: string
+          nullable: true
+          example: Housing Warrant of Fitness Assessment Criteria
+        descr:
+          type: string
+          nullable: true
+          example: his Checklist defines the complete list of criteria and assessment details for each point described in the criteria list (Appendix A) of the New Zealand Rental Housing WOF.
+        createdBy:
+          type: integer
+          format: int64
+          nullable: true
+          example: 22
+        dateCreated:
+          type: string
+          format: date-time
+          nullable: true
+          example: 2018-06-01 10:58:06
+        modifiedBy:
+          type: integer
+          format: int64
+          nullable: true
+          example: 22
+        dateLastModified:
+          type: string
+          format: date-time
+          nullable: true
+          example: 2018-06-14 10:14:11
+        accountId:
+          type: integer
+          format: int64
+          nullable: true
+          example: 22
+        number:
+          type: integer
+          format: int32
+          nullable: true
+          example: 34
+        status:
+          type: integer
+          nullable: true
+        checkpoints:
+          $ref: '#/components/schemas/CheckpointArray'
+    ChecklistArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Checklist'
+    ChecklistRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Checklist'
+      description: An array of Checklist objects
+    ChecklistResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Checklist'
+      description: An array of Checklist objects
+    NewChecklistGroup:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: false
+          example: Landscaping
+        descr:
+          type: string
+          nullable: true
+          example: Landscaping Works
+    ChecklistGroup:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 6
+        name:
+          type: string
+          nullable: false
+          example: Healthy Homes
+        descr:
+          type: string
+          nullable: true
+          example: Checklists providing the basis of a Rental Housing WOF
+        createdBy:
+          type: integer
+          nullable: true
+          example: 22
+        dateCreated:
+          type: string
+          nullable: true
+          example: 2018-04-28 23:19:21
+        modifiedBy:
+          type: integer
+          nullable: true
+          example: 22
+        dateLastModified:
+          type: string
+          nullable: true
+          example: 2022-01-30 20:25:38
+    ChecklistGroupArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/ChecklistGroup'
+    ChecklistType:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          nullable: true
+          example: Reference
+        descr:
+          type: string
+          nullable: true
+          example: Reference Checklist - Generic
+    ChecklistTypeArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/ChecklistType'
+    Checkpoint:
+      required:
+        - id
+        - checkpointType
+        - name
+      type: object
+      description: An array of Checkpoints are the main components of a Checklist. Each Checkpoint indicates an item in the Checklist that needs to be considered.
+      properties:
+        id:
+          type: integer
+          example: 82464
+        copiedFromId:
+          type: integer
+          nullable: true
+        checkpointType:
+          type: integer
+          description: A Checkpoint Type can be either 1 to indicate a standard Checkpoint, 2 to indicate a Hold Point, 3 to indicate a Criteria point or 4 to indicate Clarfication required
+          enum: [ 1,2,3,4 ]
+          example: 1
+        parentId:
+          type: integer
+          nullable: true
+          example: 0
+        checklistId:
+          type: integer
+          nullable: true
+          example: 3507
+        milestoneId:
+          type: integer
+          nullable: true
+        position:
+          type: integer
+          nullable: true
+          example: 3
+        name:
+          type: string
+          nullable: true
+          example: Checkpoint 1
+        descr:
+          type: string
+          nullable: true
+          example: The First Checkpoint
+        label:
+          type: string
+          nullable: true
+        checkpoints:
+#          $ref: '#/components/schemas/CriteriaArray'
+          nullable: true
+          type: array
+          items:
+            $ref: '#/components/schemas/CriteriaPoint'
+        createdBy:
+          type: integer
+          nullable: true
+          example: 22
+        dateCreated:
+          type: string
+          nullable: true
+          example: 2018-04-28 23:19:21
+        modifiedBy:
+          type: integer
+          nullable: true
+          example: 22
+        dateLastModified:
+          type: string
+          nullable: true
+          example: 2022-01-30 20:25:38
+    CriteriaPoint:
+      required:
+        - id
+        - checkpointType
+        - parentId
+        - name
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 82464
+        copiedFromId:
+          type: integer
+          nullable: true
+        checkpointType:
+          type: integer
+          enum:
+              - 3
+          description: A CriteriaPoint has a Checkpoint Type of 3
+          example: 3
+        parentId:
+          type: integer
+          example: 0
+        checklistId:
+          type: integer
+          nullable: true
+          example: 3507
+        milestoneId:
+          type: integer
+          nullable: true
+        position:
+          type: integer
+          nullable: true
+          example: 3
+        name:
+          type: string
+          example: Checkpoint 1
+        descr:
+          type: string
+          nullable: true
+          example: The First Checkpoint
+        label:
+          type: string
+          nullable: true
+        createdBy:
+          type: integer
+          nullable: true
+          example: 22
+        dateCreated:
+          type: string
+          nullable: true
+          example: 2018-04-28 23:19:21
+        modifiedBy:
+          type: integer
+          nullable: true
+          example: 22
+        dateLastModified:
+          type: string
+          nullable: true
+          example: 2022-01-30 20:25:38
+    CheckpointArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Checkpoint'
+      description: An array of Checkpoint objects
+    CriteriaArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/CriteriaPoint'
+      description: An array of CriteriaPoint objects linked to a common parent Checkpoint by their parentId and have a checkpointType of 3.
+    CheckpointValue:
+      type: object
+      properties:
+        id:
+          type: integer
+        checkpointId:
+          type: integer
+          nullable: true
+        workareaId:
+          type: integer
+          nullable: true
+        checkerId:
+          type: integer
+          nullable: true
+        member_id:
+          type: integer
+          nullable: true
+        dateChecked:
+          type: string
+          nullable: true
+        status:
+          type: string
+          nullable: true
+        milestoneStatus:
+          type: integer
+          nullable: true
+        note:
+          type: string
+        dateCheckedString:
+          type: string
+          nullable: true
+        locationLatitude:
+          type: number
+          nullable: true
+        locationLongitude:
+          type: number
+          nullable: true
+        checkedLatitude:
+          type: number
+          nullable: true
+        checkedLongitude:
+          type: number
+          nullable: true
+        location:
+          type: string
+          nullable: true
+        checkedLocation:
+          type: string
+          nullable: true
+        milestoneId:
+          type: integer
+          nullable: true
+        checkerName:
+          type: string
+          nullable: true
+    CheckpointvalueRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckpointValue'
+      description: An array of Checkpointvalue objects
+    CheckpointValueArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/CheckpointValue'
+      description: An array of Checkpointvalue objects
+    CheckpointValueFollowup:
+      type: object
+      properties:
+        ID:
+          type: integer
+        CheckpointID:
+          type: integer
+          nullable: true
+        WorkareaID:
+          type: integer
+          nullable: true
+        CheckerID:
+          type: integer
+          nullable: true
+        MemberId:
+          type: integer
+          nullable: true
+        Datechecked:
+          type: string
+          nullable: true
+        Status:
+          type: string
+          nullable: true
+        MilestoneStatus:
+          type: integer
+          nullable: true
+        Note:
+          type: string
+        Datecheckedstring:
+          type: string
+          nullable: true
+        Locationlatitude:
+          type: number
+          nullable: true
+        Locationlongitude:
+          type: number
+          nullable: true
+        Checkedlatitude:
+          type: number
+          nullable: true
+        Checkedlongitude:
+          type: number
+          nullable: true
+        MilestoneID:
+          type: integer
+          nullable: true
+        CheckerName:
+          type: string
+          nullable: true
+        FollowupactionID:
+          type: integer
+          nullable: true
+        FollowupactionDateraised:
+          type: string
+          nullable: true
+        FollowupactionDatefixed:
+          type: string
+          nullable: true
+    File:
+      type: object
+      properties:
+        ID:
+          type: integer
+        Name:
+          type: string
+          nullable: true
+        Prefix:
+          type: string
+          nullable: true
+        ParentID:
+          type: integer
+          nullable: true
+        ParentName:
+          type: string
+          nullable: true
+        Type:
+          type: string
+          nullable: true
+        Extension:
+          type: string
+          nullable: true
+        Date:
+          type: string
+          nullable: true
+        Descr:
+          type: string
+          nullable: true
+        Data:
+          type: string
+          nullable: true
+        FollowupactionID:
+          type: integer
+          nullable: true
+        CheckpointID:
+          type: integer
+          nullable: true
+        Latitude:
+          type: number
+          nullable: true
+        Longitude:
+          type: number
+          nullable: true
+        URL:
+          type: string
+          nullable: true
+    NewFollowupAction:
+      type: object
+      required:
+        - projectId
+        - checkpointValueId
+        - name
+        - dateRaised
+      properties:
+        checkpointValueId:
+          type: integer
+          format: int64
+        projectId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        descr:
+          type: string
+          nullable: true
+        actionType:
+          type: integer
+          nullable: true
+        category:
+          type: integer
+          nullable: true
+        improvementActionFlag:
+          type: integer
+          nullable: true
+        note:
+          type: string
+          nullable: true
+        notificationRequiredFlag:
+          type: integer
+          nullable: true
+        notificationDoneFlag:
+          type: integer
+          nullable: true
+        approvalToActionRequiredFlag:
+          type: integer
+          nullable: true
+        approvalToActionDoneFlag:
+          type: integer
+          nullable: true
+        approvalToFixRequiredFlag:
+          type: integer
+          nullable: true
+        approvalToFixDone:
+          type: integer
+          nullable: true
+        rectificationCheckedOkFlag:
+          type: integer
+          nullable: true
+        closedOffFlag:
+          type: integer
+          nullable: true
+    FollowupAction:
+      type: object
+      required:
+        - id
+        - projectId
+        - checkpointValueId
+        - name
+        - dateRaised
+      properties:
+        id:
+          type: integer
+          format: int64
+        projectId:
+          type: integer
+          format: int64
+        checkpointValueId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        descr:
+          type: string
+          nullable: true
+        dateRaised:
+          type: string
+          format: date-time
+        approvalToFixDone:
+          type: integer
+          nullable: true
+        dateFixed:
+          type: string
+          nullable: true
+        actionType:
+          type: integer
+          nullable: true
+        category:
+          type: integer
+          nullable: true
+        improvementActionFlag:
+          type: integer
+          nullable: true
+        note:
+          type: string
+          nullable: true
+        notificationRequiredFlag:
+          type: integer
+          nullable: true
+        notificationDoneFlag:
+          type: integer
+          nullable: true
+        approvalToActionRequiredFlag:
+          type: integer
+          nullable: true
+        approvalToActionDoneFlag:
+          type: integer
+          nullable: true
+        approvalToFixRequiredFlag:
+          type: integer
+          nullable: true
+        rectificationCheckedOkFlag:
+          type: integer
+          nullable: true
+        closedOffFlag:
+          type: integer
+          nullable: true
+        dateRaisedString:
+          type: string
+          nullable: true
+        dateFixedString:
+          type: string
+          nullable: true
+    Job:
+      type: object
+      description: A Job links a Project with a Checklist
+      properties:
+        id:
+          type: integer
+        projectId:
+          type: integer
+          nullable: true
+        checklistId:
+          type: integer
+          nullable: true
+        milestoneId:
+          type: integer
+          nullable: true
+        ownerId:
+          type: integer
+          nullable: true
+        contractorId:
+          type: integer
+          nullable: true
+        status:
+          type: integer
+          nullable: true
+        milestoneStatus:
+          type: integer
+          nullable: true
+        subcontractorId:
+          type: integer
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        descr:
+          type: string
+          nullable: true
+        number:
+          type: integer
+          nullable: true
+        accountId:
+          type: integer
+          nullable: true
+        projectNumber:
+          type: integer
+          nullable: true
+        checklistNumber:
+          type: integer
+          nullable: true
+        createdBy:
+          type: integer
+          nullable: true
+        dateCreated:
+          type: string
+          nullable: true
+        modifiedBy:
+          type: integer
+          nullable: true
+        dateLastModified:
+          type: string
+          nullable: true
+    JobRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Job'
+      description: An array of Job objects
+    JobResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Job'
+      description: An array of Job objects
+    JobChecker:
+      type: object
+      properties:
+        JobID:
+          type: integer
+        CheckerID:
+          type: integer
+        CreatedBy:
+          type: integer
+          nullable: true
+        Datecreated:
+          type: string
+          nullable: true
+        Status:
+          type: string
+          nullable: true
+    JobCheckerRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobChecker'
+      description: An array of JobChecker objects
+    JobCheckerResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobChecker'
+      description: An array of JobChecker objects
+    JobProgress:
+      type: object
+      properties:
+        ID:
+          type: integer
+        CheckpointID:
+          type: integer
+          nullable: true
+        ChecklistID:
+          type: integer
+          nullable: true
+        Name:
+          type: string
+          nullable: true
+        WorkareaName:
+          type: string
+          nullable: true
+        WorkareaID:
+          type: integer
+          nullable: true
+        Datechecked:
+          type: string
+          nullable: true
+    JobProgressRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobProgress'
+      description: An array of JobProgress objects
+    JobProgressResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobProgress'
+      description: An array of JobProgress objects
+    JobProjectChecklist:
+      type: object
+      properties:
+        ID:
+          type: integer
+        ProjectID:
+          type: integer
+          nullable: true
+        ChecklistID:
+          type: integer
+          nullable: true
+        JobName:
+          type: string
+          nullable: true
+        Jobdescription:
+          type: string
+          nullable: true
+        Projectnumber:
+          type: integer
+          nullable: true
+        Checklistnumber:
+          type: integer
+          nullable: true
+        ProjectName:
+          type: string
+          nullable: true
+        ChecklistName:
+          type: string
+          nullable: true
+    JobProjectChecklistRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobProjectChecklist'
+      description: An array of JobProjectChecklist objects
+    JobProjectChecklistResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobProjectChecklist'
+      description: An array of JobProjectChecklist objects
+    JobSummary:
+      type: object
+      properties:
+        ID:
+          type: integer
+        CheckpointID:
+          type: integer
+          nullable: true
+        ChecklistID:
+          type: integer
+          nullable: true
+        Name:
+          type: string
+          nullable: true
+        WorkareaName:
+          type: string
+          nullable: true
+        WorkareaID:
+          type: integer
+          nullable: true
+        Datechecked:
+          type: string
+          nullable: true
+    JobSummaryRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobSummary'
+      description: An array of JobSummary objects
+    JobSummaryResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobSummary'
+      description: An array of JobSummary objects
+    Member:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        name:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        mobile:
+          type: string
+        accountId:
+          type: integer
+        member_id:
+          type: integer
+        membership:
+          type: string
+          nullable: true
+        member_of_id:
+          type: integer
+        member_role:
+          type: string
+          nullable: true
+        createdBy:
+          type: integer
+          nullable: true
+        dateCreated:
+          type: string
+          format: date-time
+          nullable: true
+        modifiedBy:
+          type: integer
+          nullable: true
+        dateLastModified:
+          type: string
+          format: date-time
+          nullable: true
+    MembersRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Member'
+      description: An array of Members objects
+    MembersResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Member'
+      description: An array of Members objects
+    Milestone:
+      type: object
+      properties:
+        ID:
+          type: integer
+        AccountID:
+          type: integer
+          nullable: true
+        OrgID:
+          type: integer
+          nullable: true
+        ProjectID:
+          type: integer
+          nullable: true
+        Projectnumber:
+          type: integer
+          nullable: true
+        Number:
+          type: integer
+          nullable: true
+        Name:
+          type: string
+          nullable: true
+        Descr:
+          type: string
+          nullable: true
+        EndDate:
+          type: string
+          nullable: true
+        WarningDate:
+          type: string
+          nullable: true
+        Status:
+          type: integer
+          nullable: true
+        CheckpointStatus:
+          type: integer
+          nullable: true
+        EndDatenotifiedflag:
+          type: integer
+          nullable: true
+        WarningDatenotifiedflag:
+          type: integer
+          nullable: true
+        CreatedBy:
+          type: integer
+          nullable: true
+        Datecreated:
+          type: string
+          nullable: true
+        ModifiedBy:
+          type: integer
+          nullable: true
+        DatelastModified:
+          type: string
+          nullable: true
+    MilestoneRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Milestone'
+      description: An array of Milestone objects
+    MilestoneResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Milestone'
+      description: An array of Milestone objects
+    MilestoneJobs:
+      type: object
+      properties:
+        MilestoneID:
+          type: integer
+        ProjectID:
+          type: integer
+        JobID:
+          type: integer
+        WorkareaID:
+          type: integer
+          nullable: true
+        Status:
+          type: integer
+          nullable: true
+    MilestoneJobsRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MilestoneJobs'
+      description: An array of MilestoneJobs objects
+    MilestoneJobsResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MilestoneJobs'
+      description: An array of MilestoneJobs objects
+    MilestoneSubscriber:
+      type: object
+      properties:
+        MilestoneID:
+          type: integer
+        UserID:
+          type: integer
+    MilestoneSubscriberRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MilestoneSubscriber'
+      description: An array of MilestoneSubscriber objects
+    MilestoneSubscriberResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MilestoneSubscriber'
+      description: An array of MilestoneSubscriber objects
+    Organization:
+      type: object
+      properties:
+        ID:
+          type: integer
+        AdministratorId:
+          type: integer
+        OrganizationID:
+          type: integer
+          nullable: true
+        CompanyID:
+          type: integer
+          nullable: true
+        UserID:
+          type: integer
+          nullable: true
+        Name:
+          type: string
+    OrganizationRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Organization'
+      description: An array of Organization objects
+    OrganizationResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Organization'
+      description: An array of Organization objects
+    People:
+      type: object
+      properties:
+        ID:
+          type: integer
+        UserId:
+          type: integer
+          nullable: true
+        Email:
+          type: string
+        GivenName:
+          type: string
+          nullable: true
+        AdditionalName:
+          type: string
+          nullable: true
+        FamilyName:
+          type: string
+          nullable: true
+    PeopleRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/People'
+      description: An array of People objects
+    PeopleResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/People'
+      description: An array of People objects
+    NewPlace:
+      type: object
+      properties:
+        accountId:
+          type: integer
+          example: 22
+          nullable: true
+        name:
+          type: string
+          nullable: true
+          example: Pullman Quay Grand Sydney Harbour
+        description:
+          type: string
+          nullable: true
+          example: The Quay Grand is a luxury hotel located in beautiful East Circular Quay, near the iconic Sydney Opera House and Sydney Harbour Bridge
+        streetAddress:
+          type: string
+          nullable: true
+          example: 61 Macquarie Street
+        suburb:
+          type: string
+          nullable: true
+          example: Sydney
+        town:
+          type: string
+          nullable: true
+          example: Sydney
+        state:
+          type: string
+          nullable: true
+          example: NSW
+        postCode:
+          type: string
+          nullable: true
+          example: 2000
+        country:
+          type: string
+          nullable: true
+          example: Australia
+        latitude:
+          type: number
+          nullable: true
+          example: -33.86071236221415
+        longitude:
+          type: number
+          nullable: true
+          example: 151.21298345482222
+        containedInPlace:
+          type: integer
+          nullable: true
+          example:
+        createdBy:
+          type: integer
+          nullable: true
+          example: 22
+    Place:
+      required:
+        - id
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        accountId:
+          type: integer
+          example: 22
+        number:
+          type: integer
+          example: 1
+        longitude:
+          type: number
+          nullable: true
+          example: 174.824
+        latitude:
+          type: number
+          nullable: true
+          example: -41.3354
+        streetAddress:
+          type: string
+          nullable: true
+          example: 137A Breaker Bay Road
+        suburb:
+          type: string
+          nullable: true
+          example: Seatoun
+        town:
+          type: string
+          nullable: true
+          example: Wellington
+        state:
+          type: string
+          nullable: true
+          example: Wellington
+        postCode:
+          type: string
+          nullable: true
+          example: 6022
+        country:
+          type: string
+          nullable: true
+          example: New Zealand
+        name:
+          type: string
+          nullable: true
+          example: 137A Breaker Bay Road
+        description:
+          type: string
+          nullable: true
+          example: 137A Breaker Bay Road is a green single story house set back from the road in Flax Bay with a glass bus stop shelter directly out front.
+        containedInPlace:
+          type: integer
+          nullable: true
+          example: 1
+        createdBy:
+          type: integer
+          example: 22
+        dateCreated:
+          type: string
+          example: 2023-01-16 23:14:42
+        modifiedBy:
+          type: integer
+          nullable: true
+          example: 22
+        dateLastModified:
+          type: string
+          nullable: true
+          example: 2023-01-31 10:34:06
+    PlaceArray:
+      description: An array of Project objects
+      type: array
+      items:
+        $ref: '#/components/schemas/Place'
+    PlacesRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Place'
+      description: An array of Places objects
+    PlacesResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Place'
+      description: An array of Places objects
+    PlacesProjects:
+      type: object
+      properties:
+        AccountID:
+          type: integer
+        PlaceNumber:
+          type: integer
+        ProjectNumber:
+          type: integer
+    PlacesProjectsRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlacesProjects'
+      description: An array of PlacesProjects objects
+    PlacesProjectsResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlacesProjects'
+      description: An array of PlacesProjects objects
+    PlacesWorkareas:
+      type: object
+      properties:
+        PlaceId:
+          type: integer
+        WorkareaId:
+          type: integer
+    PlacesWorkareasRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlacesWorkareas'
+      description: An array of PlacesWorkareas objects
+    PlacesWorkareasResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlacesWorkareas'
+      description: An array of PlacesWorkareas objects
+    NewProject:
+      description: Information required to create a new Project
+      type: object
+      required:
+        - accountId
+        - name
+        - createdBy
+      properties:
+        accountId:
+          type: integer
+          example: 171
+        name:
+          type: string
+          example: New Project
+        descr:
+          type: string
+          nullable: true
+          example: New Project
+        place_number:
+          type: integer
+          nullable: true
+        createdBy:
+          type: integer
+          nullable: true
+          example: 120
+    Project:
+      type: object
+      required:
+        - id
+        - accountId
+        - name
+      properties:
+        id:
+          type: integer
+        status:
+          type: integer
+          nullable: true
+        statusId:
+          type: integer
+          nullable: true
+        milestoneStatus:
+          type: integer
+          nullable: true
+        name:
+          type: string
+        descr:
+          type: string
+          nullable: true
+        createdBy:
+          type: integer
+          nullable: true
+        dateCreated:
+          type: string
+          nullable: true
+        modifiedBy:
+          type: integer
+          nullable: true
+        dateLastModified:
+          type: string
+          nullable: true
+        accountId:
+          type: integer
+        number:
+          type: integer
+          nullable: true
+        place_number:
+          type: integer
+          nullable: true
+    ProjectArray:
+      description: An array of Project objects
+      type: array
+      items:
+        $ref: '#/components/schemas/Project'
+    Projectaction:
+      type: object
+      properties:
+        ID:
+          type: integer
+        Name:
+          type: string
+          nullable: true
+        Descr:
+          type: string
+          nullable: true
+    ProjectactionRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectaction'
+      description: An array of Projectaction objects
+    ProjectactionResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectaction'
+      description: An array of Projectaction objects
+    Projecthistory:
+      type: object
+      properties:
+        ID:
+          type: integer
+        ProjectID:
+          type: integer
+          nullable: true
+        Created:
+          type: string
+          nullable: true
+        StatusID:
+          type: integer
+          nullable: true
+        ActionID:
+          type: integer
+          nullable: true
+        UserID:
+          type: integer
+          nullable: true
+    ProjecthistoryRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Projecthistory'
+      description: An array of Projecthistory objects
+    ProjecthistoryResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Projecthistory'
+      description: An array of Projecthistory objects
+    ProjectStatus:
+      type: object
+      properties:
+        ID:
+          type: integer
+        Name:
+          type: string
+          nullable: true
+        Descr:
+          type: string
+          nullable: true
+    ProjectStatusRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectStatus'
+      description: An array of ProjectStatus objects
+    ProjectStatusResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectStatus'
+      description: An array of ProjectStatus objects
+    ProjectChecker:
+      type: object
+      properties:
+        ProjectID:
+          type: integer
+        CheckerID:
+          type: integer
+        CreatedBy:
+          type: integer
+          nullable: true
+        Datecreated:
+          type: string
+          nullable: true
+        Status:
+          type: string
+          nullable: true
+    ProjectCheckerRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectChecker'
+      description: An array of ProjectChecker objects
+    ProjectCheckerResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectChecker'
+      description: An array of ProjectChecker objects
+    ProjectChecklists:
+      type: object
+      properties:
+        AccountID:
+          type: integer
+          nullable: true
+        ProjectID:
+          type: integer
+        Projectnumber:
+          type: integer
+          nullable: true
+        Checklistnumber:
+          type: integer
+          nullable: true
+        ChecklistID:
+          type: integer
+          nullable: true
+        ChecklistName:
+          type: string
+          nullable: true
+        JobID:
+          type: integer
+        JobName:
+          type: string
+          nullable: true
+    ProjectChecklistsRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectChecklists'
+      description: An array of ProjectChecklists objects
+    ProjectChecklistsResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectChecklists'
+      description: An array of ProjectChecklists objects
+    ProjectChecklistsView:
+      type: object
+      properties:
+        AccountID:
+          type: integer
+          nullable: true
+        ProjectID:
+          type: integer
+        Projectnumber:
+          type: integer
+          nullable: true
+        Checklistnumber:
+          type: integer
+          nullable: true
+        ChecklistID:
+          type: integer
+          nullable: true
+        ChecklistName:
+          type: string
+          nullable: true
+        Checklistdescription:
+          type: string
+          nullable: true
+        JobID:
+          type: integer
+        JobName:
+          type: string
+          nullable: true
+    ProjectChecklistsViewRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectChecklistsView'
+      description: An array of ProjectChecklistsView objects
+    ProjectChecklistsViewResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectChecklistsView'
+      description: An array of ProjectChecklistsView objects
+    ProjectChecklistWorkareas:
+      type: object
+      properties:
+        AccountID:
+          type: integer
+          nullable: true
+        Projectnumber:
+          type: integer
+          nullable: true
+        Checklistnumber:
+          type: integer
+          nullable: true
+        ChecklistID:
+          type: integer
+          nullable: true
+        JobID:
+          type: integer
+        WorkareaID:
+          type: integer
+        JobName:
+          type: string
+          nullable: true
+        WorkareaName:
+          type: string
+          nullable: true
+        Workareanumber:
+          type: integer
+          nullable: true
+        Workareadescription:
+          type: string
+          nullable: true
+    ProjectChecklistWorkareasRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectChecklistWorkareas'
+      description: An array of ProjectChecklistWorkareas objects
+    ProjectChecklistWorkareasResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectChecklistWorkareas'
+      description: An array of ProjectChecklistWorkareas objects
+    ProjectCustomer:
+      type: object
+      properties:
+        ProjectID:
+          type: integer
+        CustomerID:
+          type: integer
+    ProjectCustomerRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectCustomer'
+      description: An array of ProjectCustomer objects
+    ProjectCustomerResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectCustomer'
+      description: An array of ProjectCustomer objects
+    Role:
+      type: object
+      properties:
+        ID:
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+          nullable: true
+    RoleRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+      description: An array of Role objects
+    RoleResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+      description: An array of Role objects
+    Roles:
+      type: object
+      properties:
+        ID:
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+          nullable: true
+    RolesRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Roles'
+      description: An array of Roles objects
+    RolesResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Roles'
+      description: An array of Roles objects
+    NewUser:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Larry Murdoch
+        firstName:
+          type: string
+          example: Larry
+        lastName:
+          type: string
+          example: Murdoch
+        username:
+          type: string
+          example: larry
+        password:
+          type: string
+          example: test
+        email:
+          type: string
+          format: email
+          nullable: true
+          example: Larry.Murdoch@hotmail.com
+        mobile:
+          type: string
+          nullable: true
+          example: +64 293584201
+        createdBy:
+          type: integer
+          nullable: true
+          example: 22
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 22
+        name:
+          type: string
+          example: Richard
+        username:
+          type: string
+          example: rich
+        email:
+          type: string
+          format: email
+          nullable: true
+          example: breakerbay@hotmail.com
+        mobile:
+          type: string
+          nullable: true
+          example: +64 272597224
+        createdBy:
+          type: integer
+          nullable: true
+          example: 0
+        dateCreated:
+          type: string
+          format: date-time
+          nullable: true
+          example: 2017-09-20 09:38:49
+        modifiedBy:
+          type: integer
+          nullable: true
+          example: 22
+        dateLastModified:
+          type: string
+          format: date-time
+          nullable: true
+          example: 2023-01-14 19:37:30
+    UserArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
+      description: An array of User objects
+    UsersRoles:
+      type: object
+      properties:
+        UserId:
+          type: integer
+        RoleId:
+          type: integer
+    UsersRolesRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsersRoles'
+      description: An array of UsersRoles objects
+    UsersRolesResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsersRoles'
+      description: An array of UsersRoles objects
+    UserChecklist:
+      type: object
+      properties:
+        UserID:
+          type: integer
+        ChecklistID:
+          type: integer
+    UserChecklistRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserChecklist'
+      description: An array of UserChecklist objects
+    UserChecklistResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserChecklist'
+      description: An array of UserChecklist objects
+    UserWorklot:
+      type: object
+      properties:
+        UserID:
+          type: integer
+        WorklotID:
+          type: integer
+    UserWorklotRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserWorklot'
+      description: An array of UserWorklot objects
+    UserWorklotResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserWorklot'
+      description: An array of UserWorklot objects
+    Workarea:
+      type: object
+      required:
+        - id
+        - accountId
+        - jobId
+      properties:
+        id:
+          type: integer
+        accountId:
+          type: integer
+        jobId:
+          type: string
+        workarea_number:
+          type: integer
+          nullable: true
+        place_number:
+          type: integer
+          nullable: true
+        jobName:
+          type: string
+          nullable: true
+          example: 1-01  Preliminaries
+        jobDescription:
+          type: string
+          nullable: true
+          example: (Imported)
+        milestoneId:
+          type: integer
+          nullable: true
+        worklotId:
+          type: integer
+          nullable: true
+        status:
+          type: integer
+          nullable: true
+        milestoneStatus:
+          type: integer
+          nullable: true
+        name:
+          type: string
+          nullable: true
+          example: West (Somewhere)
+        descr:
+          type: string
+          nullable: true
+          example: Somewhere west
+        createdBy:
+          type: integer
+          nullable: true
+        createdByUser:
+          type: string
+          nullable: true
+        dateCreated:
+          type: string
+          nullable: true
+        modifiedBy:
+          type: integer
+          nullable: true
+        modifiedByUser:
+          type: string
+          nullable: true
+        ModifiedBy:
+          type: integer
+          nullable: true
+        DatelastModified:
+          type: string
+          nullable: true
+    WorkareaArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Workarea'
+      description: An array of Workarea objects
+    WorkareaResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Workarea'
+      description: An array of Workarea objects
+    WorkareaChecker:
+      type: object
+      properties:
+        WorkareaID:
+          type: integer
+        CheckerID:
+          type: integer
+        CreatedBy:
+          type: integer
+          nullable: true
+        Datecreated:
+          type: string
+          nullable: true
+        Status:
+          type: string
+          nullable: true
+    WorkareaCheckerRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkareaChecker'
+      description: An array of WorkareaChecker objects
+    WorkareaCheckerResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkareaChecker'
+      description: An array of WorkareaChecker objects
+    Worklot:
+      type: object
+      properties:
+        ID:
+          type: integer
+        ContractorID:
+          type: integer
+          nullable: true
+        OrgID:
+          type: integer
+          nullable: true
+        Name:
+          type: string
+          nullable: true
+        Descr:
+          type: string
+          nullable: true
+        StartDate:
+          type: string
+          nullable: true
+        EndDate:
+          type: string
+          nullable: true
+    WorklotRequest:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Worklot'
+      description: An array of Worklot objects
+    WorklotResponse:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Worklot'
+      description: An array of Worklot objects
+  responses:
+    ActiontypeResponse:
+      description: Actiontype Response Object
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ActiontypeResponse'
+    CheckerLocationResponse:
+      description: CheckerLocation Response Object
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CheckerLocationResponse'
+    ChecklistResponse:
+      description: Checklist Response Object
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ChecklistResponse'
+    CheckpointvalueResponse:
+      description: Checkpointvalue Response Object
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CheckpointValueArray'
+    JobResponse:
+      description: Job Response Object
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JobResponse'
+    MembersResponse:
+      description: Members Response Object
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MembersResponse'
+    MilestoneJobsResponse:
+      description: MilestoneJobs Response Object
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MilestoneJobsResponse'
+    MilestoneResponse:
+      description: Milestone Response Object
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MilestoneResponse'
+    PeopleResponse:
+      description: People Response Object
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PeopleResponse'
+    PlacesResponse:
+      description: Places Response Object
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PlacesResponse'
+    PlacesWorkareasResponse:
+      description: PlacesWorkareas Response Object
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PlacesWorkareasResponse'
+    RoleResponse:
+      description: Role Response Object
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RoleResponse'
+    RolesResponse:
+      description: Roles Response Object
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RolesResponse'
+    UsersRolesResponse:
+      description: UsersRoles Response Object
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UsersRolesResponse'
+    WorkareaResponse:
+      description: Workarea Response Object
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WorkareaResponse'
+    WorklotResponse:
+      description: Worklot Response Object
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WorklotResponse'
+  requestBodies:
+    ActiontypeRequest:
+      description: An array of new Actiontype records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ActiontypeRequest'
+      required: true
+    CheckerLocationRequest:
+      description: An array of new CheckerLocation records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CheckerLocationRequest'
+      required: true
+    JobRequest:
+      description: An array of new Job records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JobRequest'
+      required: true
+    JobCheckerRequest:
+      description: An array of new JobChecker records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JobCheckerRequest'
+      required: true
+    JobProgressRequest:
+      description: An array of new JobProgress records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JobProgressRequest'
+      required: true
+    JobProjectChecklistRequest:
+      description: An array of new JobProjectChecklist records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JobProjectChecklistRequest'
+      required: true
+    JobSummaryRequest:
+      description: An array of new JobSummary records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JobSummaryRequest'
+      required: true
+    MembersRequest:
+      description: An array of new Members records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MembersRequest'
+      required: true
+    MilestoneRequest:
+      description: An array of new Milestone records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MilestoneRequest'
+      required: true
+    MilestoneJobsRequest:
+      description: An array of new MilestoneJobs records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MilestoneJobsRequest'
+      required: true
+    MilestoneSubscriberRequest:
+      description: An array of new MilestoneSubscriber records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MilestoneSubscriberRequest'
+      required: true
+    OrganizationRequest:
+      description: An array of new Organization records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OrganizationRequest'
+      required: true
+    PeopleRequest:
+      description: An array of new People records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PeopleRequest'
+      required: true
+    PlacesRequest:
+      description: An array of new Places records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PlacesRequest'
+      required: true
+    PlacesProjectsRequest:
+      description: An array of new PlacesProjects records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PlacesProjectsRequest'
+      required: true
+    PlacesWorkareasRequest:
+      description: An array of new PlacesWorkareas records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PlacesWorkareasRequest'
+      required: true
+    ProjectactionRequest:
+      description: An array of new Projectaction records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProjectactionRequest'
+      required: true
+    ProjectChecklistsRequest:
+      description: An array of new ProjectChecklists records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProjectChecklistsRequest'
+      required: true
+    RoleRequest:
+      description: An array of new Role records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RoleRequest'
+      required: true
+    RolesRequest:
+      description: An array of new Roles records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RolesRequest'
+      required: true
+    UsersRolesRequest:
+      description: An array of new UsersRoles records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UsersRolesRequest'
+      required: true
+    UserChecklistRequest:
+      description: An array of new UserChecklist records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserChecklistRequest'
+      required: true
+    WorklotRequest:
+      description: An array of new Worklot records
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WorklotRequest'
+      required: true
+  examples:
+    UserNotFound:
+      value:
+        error: NotFound
+        message: The requested User could not be found

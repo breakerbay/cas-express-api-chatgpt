@@ -1,0 +1,97 @@
+openapi: 3.0.0
+info:
+  title: ChecklistType API Definitions
+  version: 1.0.0
+paths:
+  /checklisttypes:
+    get:
+      summary: Get anarray of ChecklistTypes
+      operationId: getChecklistTypes
+      responses:
+        200:
+          description: Array of ChecklistTypes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistTypeArray'
+    post:
+      summary: Create a new ChecklistType
+      operationId: createChecklistTypes
+      requestBody:
+        description: A new ChecklistType
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChecklistType'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: { }
+      x-codegen-request-body-name: checklisttypesRequest
+  /checklisttypes/{id}:
+    get:
+      summary: Get a specific ChecklistTypes
+      operationId: getChecklistType
+      parameters:
+        - name: id
+          in: path
+          description: Id of the ChecklistType to fetch
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: ChecklistType retrieved by the provided Id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistType'
+    put:
+      summary: Update an existing ChecklistTypes
+      operationId: updateChecklistTypes
+      parameters:
+        - name: id
+          in: path
+          description: ID of the ChecklistTypes to update
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content: { }
+    delete:
+      summary: Delete a ChecklistTypes
+      operationId: deleteChecklistTypes
+      parameters:
+        - name: id
+          in: path
+          description: ID of the ChecklistTypes to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: No Content
+          content: { }
+components:
+  schemas:
+    ChecklistType:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          nullable: true
+          example: Reference
+        descr:
+          type: string
+          nullable: true
+          example: Reference Checklist - Generic
+    ChecklistTypeArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/ChecklistType'

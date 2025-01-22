@@ -1,0 +1,45 @@
+openapi: 3.0.0
+info:
+  title: Project API Definitions
+  version: 1.0.0
+paths: { }
+components:
+  schemas:
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+        accountId:
+          type: integer
+        number:
+          type: integer
+        name:
+          type: string
+        descr:
+          type: string
+          nullable: true
+        statusId:
+          type: integer
+          nullable: true
+        status:
+          type: integer
+          nullable: true
+        milestoneStatus:
+          type: integer
+          nullable: true
+        place_number:
+          type: integer
+          nullable: true
+        createdBy:
+          type: integer
+          nullable: true
+        datecreated:
+          type: string
+          nullable: true
+        modifiedBy:
+          type: integer
+          nullable: true
+        datelastModified:
+          type: string
+          nullable: true

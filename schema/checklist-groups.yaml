@@ -1,0 +1,142 @@
+openapi: 3.0.0
+info:
+  title: ChecklistGroup API Definitions
+  version: 1.0.0
+paths:
+  /checklistgroups:
+    get:
+      summary: Get a array of ChecklistGroups
+      operationId: getChecklistgroups
+      responses:
+        200:
+          description: Array of ChecklistGroups
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistGroupArray'
+    post:
+      summary: Create a new ChecklistGroup
+      operationId: createChecklistgroup
+      requestBody:
+        description: A new ChecklistGroup record
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewChecklistGroup'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+      x-codegen-request-body-name: checklistgroupRequest
+  /checklistgroups/{id}:
+    get:
+      summary: Get a specific ChecklistGroup
+      operationId: 'getChecklistgroup'
+      parameters:
+        - name: id
+          in: path
+          description: Id of the Checklistgroup to fetch
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: ChecklistGroup matching the provided Id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistGroup'
+    put:
+      summary: Update an existing Checklistgroup
+      operationId: updateChecklistgroup
+      parameters:
+        - name: id
+          in: path
+          description: ID of the Checklistgroup to update
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content: {}
+    delete:
+      summary: Delete a Checklistgroup
+      operationId: deleteChecklistgroup
+      parameters:
+        - name: id
+          in: path
+          description: ID of the Checklistgroup to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: No Content
+          content: {}
+  /checklistgroups/find/{query}:
+    get:
+      summary: Find ChecklistGroup names matching the search criteria
+      operationId: findByChecklistGroupName
+      parameters:
+        - name: query
+          in: path
+          description: ChecklistGroup name search criteria
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Array of ChecklistGroups matching the search criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistGroupArray'
+components:
+  schemas:
+    NewChecklistGroup:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: false
+          example: Landscaping
+        descr:
+          type: string
+          nullable: true
+          example: Landscaping Works
+    ChecklistGroup:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 6
+        name:
+          type: string
+          nullable: false
+          example: Healthy Homes
+        descr:
+          type: string
+          nullable: true
+          example: Checklists providing the basis of a Rental Housing WOF
+        createdBy:
+          type: integer
+          nullable: true
+          example: 22
+        dateCreated:
+          type: string
+          nullable: true
+          example: 2018-04-28 23:19:21
+        modifiedBy:
+          type: integer
+          nullable: true
+          example: 22
+        dateLastModified:
+          type: string
+          nullable: true
+          example: 2022-01-30 20:25:38
+    ChecklistGroupArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/ChecklistGroup'

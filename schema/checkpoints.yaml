@@ -1,0 +1,229 @@
+openapi: 3.0.0
+info:
+  title: Checkpoint API Definitions
+  version: 1.0.0
+paths:
+  /checkpoints:
+    get:
+      summary: Get a list of Checkpoints
+      tags:
+        - Deprecated Operation
+      operationId: getCheckpoints
+      deprecated: true
+      responses:
+        200:
+          description: OK
+          content: { }
+    post:
+      summary: Create a new Checkpoint
+      tags:
+        - Deprecated Operation
+      operationId: createCheckpoint
+      deprecated: true
+      requestBody:
+        description: New Checkpoint record
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Checkpoint'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: { }
+      x-codegen-request-body-name: checkpointRequest
+  /checkpoints/{id}:
+    get:
+      summary: Get a specific Checkpoint
+      tags:
+        - Maintenance Operation
+      operationId: getCheckpoint
+      parameters:
+        - name: id
+          in: path
+          description: id of the Checkpoint to fetch
+          required: true
+          schema:
+            type: integer
+          example:
+            85686
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Checkpoint'
+    put:
+      summary: Update an existing Checkpoint
+      tags:
+        - Deprecated Operation
+      operationId: updateCheckpoint
+      deprecated: true
+      parameters:
+        - name: id
+          in: path
+          description: ID of the Checkpoint to update
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content: { }
+    delete:
+      summary: Delete a Checkpoint
+      tags:
+        - Deprecated Operation
+      operationId: deleteCheckpoint
+      deprecated: true
+      parameters:
+        - name: id
+          in: path
+          description: ID of the Checkpoint to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: No Content
+          content: { }
+components:
+  schemas:
+    Checkpoint:
+      required:
+        - id
+        - checkpointType
+        - name
+      type: object
+      description: An array of Checkpoints are the main components of a Checklist. Each Checkpoint indicates an item in the Checklist that needs to be considered.
+      properties:
+        id:
+          type: integer
+          example: 82464
+        copiedFromId:
+          type: integer
+          nullable: true
+        checkpointType:
+          type: integer
+          description: A Checkpoint Type can be either 1 to indicate a standard Checkpoint, 2 to indicate a Hold Point, 3 to indicate a Criteria point or 4 to indicate Clarfication required
+          enum: [ 1,2,3,4 ]
+          example: 1
+        parentId:
+          type: integer
+          nullable: true
+          example: 0
+        checklistId:
+          type: integer
+          nullable: true
+          example: 3507
+        milestoneId:
+          type: integer
+          nullable: true
+        position:
+          type: integer
+          nullable: true
+          example: 3
+        name:
+          type: string
+          nullable: true
+          example: Checkpoint 1
+        descr:
+          type: string
+          nullable: true
+          example: The First Checkpoint
+        label:
+          type: string
+          nullable: true
+        checkpoints:
+          #          $ref: '#/components/schemas/CriteriaArray'
+          nullable: true
+          type: array
+          items:
+            $ref: '#/components/schemas/CriteriaPoint'
+        createdBy:
+          type: integer
+          nullable: true
+          example: 22
+        dateCreated:
+          type: string
+          nullable: true
+          example: 2018-04-28 23:19:21
+        modifiedBy:
+          type: integer
+          nullable: true
+          example: 22
+        dateLastModified:
+          type: string
+          nullable: true
+          example: 2022-01-30 20:25:38
+    CriteriaPoint:
+      required:
+        - id
+        - checkpointType
+        - parentId
+        - name
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 82464
+        copiedFromId:
+          type: integer
+          nullable: true
+        checkpointType:
+          type: integer
+          enum:
+            - 3
+          description: A CriteriaPoint has a Checkpoint Type of 3
+          example: 3
+        parentId:
+          type: integer
+          example: 0
+        checklistId:
+          type: integer
+          nullable: true
+          example: 3507
+        milestoneId:
+          type: integer
+          nullable: true
+        position:
+          type: integer
+          nullable: true
+          example: 3
+        name:
+          type: string
+          example: Checkpoint 1
+        descr:
+          type: string
+          nullable: true
+          example: The First Checkpoint
+        label:
+          type: string
+          nullable: true
+        createdBy:
+          type: integer
+          nullable: true
+          example: 22
+        dateCreated:
+          type: string
+          nullable: true
+          example: 2018-04-28 23:19:21
+        modifiedBy:
+          type: integer
+          nullable: true
+          example: 22
+        dateLastModified:
+          type: string
+          nullable: true
+          example: 2022-01-30 20:25:38
+    CheckpointArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Checkpoint'
+      description: An array of Checkpoint objects
+    CriteriaArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/CriteriaPoint'
+      description: An array of CriteriaPoint objects linked to a common parent Checkpoint by their parentId and have a checkpointType of 3.

@@ -1,0 +1,134 @@
+openapi: 3.0.0
+info:
+  title: CheckpointValue API Definitions
+  version: 1.0.0
+paths:
+  /checkpointvalues:
+    get:
+      summary: Get a list of Checkpointvalues
+      tags:
+        - Deprecated Operation
+      operationId: getCheckpointvalues
+      deprecated: true
+      responses:
+        200:
+          description: OK
+          content: { }
+    post:
+      summary: Create a new Checkpointvalue
+      operationId: createCheckpointvalue
+      requestBody:
+        description: An array of new Checkpointvalue records
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckpointValue'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: { }
+      x-codegen-request-body-name: checkpointvalueRequest
+  /checkpointvalues/{id}:
+    get:
+      summary: Get a specific Checkpointvalue
+      operationId: getCheckpointvalue
+      parameters:
+        - name: id
+          in: path
+          description: ID of the Checkpointvalue to fetch
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckpointValue'
+    put:
+      summary: Update an existing Checkpointvalue
+      operationId: updateCheckpointvalue
+      parameters:
+        - name: id
+          in: path
+          description: ID of the Checkpointvalue to update
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content: { }
+    delete:
+      summary: Delete a Checkpointvalue
+      operationId: deleteCheckpointvalue
+      parameters:
+        - name: id
+          in: path
+          description: ID of the Checkpointvalue to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: No Content
+          content: { }
+components:
+  schemas:
+    CheckpointValue:
+      type: object
+      properties:
+        id:
+          type: integer
+        checkpointId:
+          type: integer
+          nullable: true
+        workareaId:
+          type: integer
+          nullable: true
+        checkerId:
+          type: integer
+          nullable: true
+        member_id:
+          type: integer
+          nullable: true
+        dateChecked:
+          type: string
+          nullable: true
+        status:
+          type: string
+          nullable: true
+        milestoneStatus:
+          type: integer
+          nullable: true
+        note:
+          type: string
+        dateCheckedString:
+          type: string
+          nullable: true
+        locationLatitude:
+          type: number
+          nullable: true
+        locationLongitude:
+          type: number
+          nullable: true
+        checkedLatitude:
+          type: number
+          nullable: true
+        checkedLongitude:
+          type: number
+          nullable: true
+        location:
+          type: string
+          nullable: true
+        checkedLocation:
+          type: string
+          nullable: true
+        milestoneId:
+          type: integer
+          nullable: true
+        checkerName:
+          type: string
+          nullable: true
