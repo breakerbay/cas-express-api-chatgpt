@@ -6,6 +6,7 @@ import actionCategoriesRoutes from "./routes/actionCategoryRoutes";
 import actionTypeRouter from './routes/actionTypeRoutes';
 import accountsRoutes from './routes/accounts';
 import checklistRoutes from './routes/checklistRoutes';
+import checklistGroupRouter from './routes/checklistGroupRoutes';
 import projectRouter from './routes/projectRoutes';
 import usersRoutes from './routes/users';
 
@@ -27,6 +28,7 @@ app.use('/api', actionCategoriesRoutes);
 app.use('/api', actionTypeRouter);
 app.use('/api', accountsRoutes);
 app.use('/api', checklistRoutes);
+app.use('/api', checklistGroupRouter);
 app.use('/api', projectRouter);
 app.use('/api', usersRoutes);
 

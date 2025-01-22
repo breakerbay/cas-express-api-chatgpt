@@ -50,6 +50,9 @@ GET /api/actiontypes/search/:query: Search for action types by name.
   * http://localhost:3000/api/accounts/1
 * http://localhost:3000/api/checklists
   * http://localhost:3000/api/checklists/1
+* http://localhost:3000/api/checklistgroups
+  * http://localhost:3000/api/checklistgroups/1
+  * http://localhost:3000/api/checklistgroups/find/:query 
 * http://localhost:3000/api/projects
   * http://localhost:3000/api/projects/4
 * http://localhost:3000/api/users
@@ -122,7 +125,6 @@ mysql> show tables;
 +-----------------------------+
 | Tables_in_checklist2        |
 +-----------------------------+
-| checklist_groups            |
 | checklist_types             |
 | checkpoint                  |
 | checkpointvalue             |
@@ -150,7 +152,7 @@ sudo /usr/local/mysql/support-files/mysql.server start
 
 ## Model Prompt 1
 
-Following the pattern of the above code can you also provide Actiontype code for the operations defined the attached action-types.yaml file?
+Following the pattern of the above code can you also provide ChecklistGroup code for the operations defined in the attached checklist-groups.yaml file?
 
 ## User with Projects
 ```
