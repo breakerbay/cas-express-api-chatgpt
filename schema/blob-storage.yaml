@@ -1,0 +1,665 @@
+openapi: 3.0.0
+info:
+  title: Blob Storage POC API
+  description: Created for testing local development using Azurite blob storage emulator
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:7001/api
+  - url: http://localhost:7002/api
+
+paths:
+  /containers:
+    get:
+      summary: Lists Containers in a Storage Account
+      operationId: listContainers
+      responses:
+        '200':
+          description: Generic success response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      summary: Create a new Container in the Azure Blob Storage Account
+      operationId: createContainer
+      requestBody:
+        description: Container Properties
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                containerName:
+                  type: string
+                  pattern: '^[a-z0-9]+$'
+                  description: "Container Name"
+                  example: "container1"
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Successfully create a new Container
+        '403':
+          description: AlreadyExists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Container Already Exists
+  /containers/{containerName}:
+    get:
+      summary: Get Container Details
+      operationId:  getContainerDetails
+      parameters:
+        - name: containerName
+          in: path
+          description: Name of the Container
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-z0-9]+$'
+            example: "dingoes"
+      responses:
+        '200':
+          description: Generic success response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    put:
+      summary: Update Container Details
+      description: Update Container Details can update the container metadata but this causes the Azure Storage Explored to crash.
+      operationId: updateContainerDetails
+      parameters:
+        - name: containerName
+          in: path
+          description: Name of the Container
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-z0-9]+$'
+            example: "dingoes"
+      requestBody:
+        description: Update Container Details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Metadata'
+      responses:
+        '200':
+          description: Generic success response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    delete:
+      summary: Delete Container
+      operationId: deleteContainer
+      parameters:
+        - name: containerName
+          in: path
+          description: Name of the Container
+          required: true
+          schema:
+            type: string
+            example: "abe"
+      responses:
+        '200':
+          description: Generic success response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /containers/{containerName}/blobs:
+    get:
+      summary: List the blob files within the container
+      operationId: listContainerBlobs
+      parameters:
+        - name: containerName
+          in: path
+          description: Name of the Container
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-z0-9]+$'
+            example: "dingoes"
+      responses:
+        '200':
+          description: Generic success response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      summary: Upload a file to Azure Blob Storage
+      operationId: uploadFileToContainer
+      parameters:
+        - name: containerName
+          in: path
+          description: Name of the Container
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-z0-9]+$'
+            example: "dingoes"
+      requestBody:
+        description: File to be uploaded
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful upload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: File uploaded successfully with ETag
+        '400':
+          description: Bad request, e.g., file does not exist or filePath not provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: File does not exist
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred while uploading the file
+  /containers/{containerName}/blobs/{fileName}:
+    get:
+      summary: Get details of the blob file in the container
+      operationId: getContainerBlobDetails
+      parameters:
+        - name: containerName
+          in: path
+          description: Name of the Container
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-z0-9]+$'
+            example: "dingoes"
+        - name: fileName
+          in: path
+          description: Name of the File (Blob)
+          required: true
+          schema:
+            type: string
+            example: "dingos.jpg"
+      responses:
+        '200':
+          description: Generic success response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    put:
+      summary: Update Blob Details
+      description: Update Blob Details, e.g. Metadata and Tags
+      operationId: updateBlobDetails
+      parameters:
+        - name: containerName
+          in: path
+          description: Name of the Container
+          required: true
+          schema:
+            type: string
+            example: "dingoes"
+            pattern: '^[a-z0-9]+$'
+        - name: fileName
+          in: path
+          description: Name of the File (Blob)
+          required: true
+          schema:
+            type: string
+            example: "dingos.jpg"
+      requestBody:
+        description: Update Blob Details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlobDetails'
+      responses:
+        '200':
+          description: Generic success response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    delete:
+      summary: Delete the blob file within the container
+      operationId: deleteContainerBlob
+      parameters:
+        - name: containerName
+          in: path
+          description: Name of the Container
+          required: true
+          schema:
+            type: string
+            example: "dingoes"
+            pattern: '^[a-z0-9]+$'
+        - name: fileName
+          in: path
+          description: Name of the File (Blob)
+          required: true
+          schema:
+            type: string
+            example: "dingos.jpg"
+      responses:
+        '200':
+          description: Generic success response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /containers/{containerName}/blobs/{fileName}/download:
+    get:
+      summary: Download the blob file from the container
+      operationId: getContainerBlobAsFile
+      parameters:
+        - name: containerName
+          in: path
+          description: Name of the Container
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-z0-9]+$'
+            example: "dingoes"
+        - name: fileName
+          in: path
+          description: Name of the File (Blob)
+          required: true
+          schema:
+            type: string
+            example: "dingos.jpg"
+      responses:
+        '200':
+          description: Generic success response
+          content:
+            application/octet-stream:
+              schema:
+                type: object
+                additionalProperties: true
+            image/jpeg:
+              schema:
+                type: object
+                additionalProperties: true
+            image/webp:
+              schema:
+                type: object
+                additionalProperties: true
+            video/mp4:
+              schema:
+                type: object
+                additionalProperties: true
+  /containers/{containerName}/blobs/{fileName}/findByTags:
+    post:
+      summary: Use Tags to find one or more blob files
+      description: Returns a list of blob file names (urls) by searching using the supplied tags
+      tags:
+        - In Progress
+      operationId: findBlobsByTags
+      parameters:
+        - name: containerName
+          in: path
+          description: Name of the Container
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-z0-9]+$'
+            example: "dingoes"
+        - name: fileName
+          in: path
+          description: Name of the File (Blob)
+          required: true
+          schema:
+            type: string
+            example: "dingos.jpg"
+      requestBody:
+        description: List of Tags
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tags'
+#          multipart/form-data:
+#            schema:
+#              $ref: '#/components/schemas/Tags'
+      responses:
+        '200':
+          description: Generic success response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /containers/{containerName}/blobs/{fileName}/metadata:
+    get:
+      summary: Get the metadata for the blob file
+      tags:
+        - TODO
+      operationId: getBlobMetadata
+      parameters:
+        - name: containerName
+          in: path
+          description: Name of the Container
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-z0-9]+$'
+            example: "dingoes"
+        - name: fileName
+          in: path
+          description: Name of the File (Blob)
+          required: true
+          schema:
+            type: string
+            example: "dingos.jpg"
+      responses:
+        '200':
+          description: Generic success response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /containers/{containerName}/blobs/{fileName}/properties:
+    get:
+      summary: Get blob properties
+      tags:
+        - TODO
+      operationId: getBlobProperties
+      parameters:
+        - name: containerName
+          in: path
+          description: Name of the Container
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-z0-9]+$'
+            example: "dingoes"
+        - name: fileName
+          in: path
+          description: Name of the File (Blob)
+          required: true
+          schema:
+            type: string
+            example: "dingos.jpg"
+      responses:
+        '200':
+          description: Generic success response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /containers/{containerName}/blobs/{fileName}/snapshots:
+    get:
+      summary: List the snapshots of the blob file
+      tags:
+        - TODO
+      operationId: listBlobSnapshots
+      parameters:
+        - name: containerName
+          in: path
+          description: Name of the Container
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-z0-9]+$'
+            example: "dingoes"
+        - name: fileName
+          in: path
+          description: Name of the File (Blob)
+          required: true
+          schema:
+            type: string
+            example: "dingos.jpg"
+      responses:
+        '200':
+          description: Generic success response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /containers/{containerName}/blobs/{fileName}/tags:
+    get:
+      summary: Get Blob Tags
+      operationId: getBlobTags
+      tags:
+        - TODO
+      parameters:
+        - name: containerName
+          in: path
+          description: Name of the Container
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-z0-9]+$'
+            example: "dingoes"
+        - name: fileName
+          in: path
+          description: Name of the File (Blob)
+          required: true
+          schema:
+            type: string
+            example: "dingos.jpg"
+      responses:
+        '200':
+          description: Generic success response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /containers/{containerName}/blobs/{fileName}/versions:
+    get:
+      summary: List the versions of the blob file
+      tags:
+        - TODO
+      operationId: listBlobVersions
+      parameters:
+        - name: containerName
+          in: path
+          description: Name of the Container
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-z0-9]+$'
+            example: "dingoes"
+        - name: fileName
+          in: path
+          description: Name of the File (Blob)
+          required: true
+          schema:
+            type: string
+            example: "dingos.jpg"
+      responses:
+        '200':
+          description: Generic success response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /utilities/createBlobHierarchy:
+    post:
+      summary: Create an example Container and Blob hierarchy in the Azure Blob Storage Account
+      operationId: createBlobHierarchyTagsMetadata
+      tags:
+        - Utilities
+      parameters:
+        - name: containerName
+          in: query
+          description: Name of the Container
+          required: false
+          schema:
+            type: string
+            pattern: '^[a-z0-9]+$'
+            example: "dingoes"
+      #      requestBody:
+#        description: Container Properties
+#        required: true
+#        content:
+#          multipart/form-data:
+#            schema:
+#              type: object
+#              properties:
+#                containerName:
+#                  type: string
+#                  pattern: '^[a-z0-9]+$'
+#                  description: "Container Name"
+#                  example: "container1"
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Successfully create a new Container
+        '403':
+          description: AlreadyExists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Container Already Exists
+  /utilities/createBlobHierarchyWithTagsMetadata:
+    post:
+      summary: Create an example Container and Blob hierarchy in the Azure Blob Storage Account
+      operationId: createBlobHierarchyTagsMetadata
+      tags:
+        - Utilities
+      parameters:
+        - name: containerName
+          in: query
+          description: Name of the Container
+          required: false
+          schema:
+            type: string
+            pattern: '^[a-z0-9]+$'
+            example: "dingoes"
+      #      requestBody:
+      #        description: Container Properties
+      #        required: true
+      #        content:
+      #          multipart/form-data:
+      #            schema:
+      #              type: object
+      #              properties:
+      #                containerName:
+      #                  type: string
+      #                  pattern: '^[a-z0-9]+$'
+      #                  description: "Container Name"
+      #                  example: "container1"
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Successfully create a new Container
+        '403':
+          description: AlreadyExists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Container Already Exists
+components:
+  schemas:
+#    BlobDetails:
+#      type: object
+#      description: "Blob details"
+#      properties:
+#        metadata:
+#          type:
+#            $ref: '#/components/schemas/Metadata'
+#        tags:
+#          type:
+#            $ref: '#/components/schemas/Tags'
+    BlobDetails:
+      type: object
+      description: "Blob details"
+      properties:
+        metadata:
+          type: array
+          items:
+            $ref: '#/components/schemas/NameValuePair'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/NameValuePair'
+    Metadata:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameValuePair'
+    Tags:
+      type: array
+      items:
+        $ref: '#/components/schemas/NameValuePair'
+    NameValuePair:
+      type: object
+      description: "Generic Name Value Pair Object"
+      required:
+        - name
+        - value
+      properties:
+        name:
+          type: string
+        value:
+          type: string
