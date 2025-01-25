@@ -29,6 +29,7 @@ Details at https://aka.ms/tsconfig
 │   ├── config
 │   ├── app.ts
 ├── .env
+├── package.json
 └── tsconfig.json
 
 ## Routes
@@ -53,6 +54,8 @@ GET /api/actiontypes/search/:query: Search for action types by name.
 * http://localhost:3000/api/checklistgroups
   * http://localhost:3000/api/checklistgroups/1
   * http://localhost:3000/api/checklistgroups/find/:query 
+* http://localhost:3000/api/checklisttypes
+  * http://localhost:3000/api/checklisttypes/1  * 
 * http://localhost:3000/api/projects
   * http://localhost:3000/api/projects/4
 * http://localhost:3000/api/users
@@ -153,6 +156,39 @@ sudo /usr/local/mysql/support-files/mysql.server start
 ## Model Prompt 1
 
 Following the pattern of the above code can you also provide ChecklistGroup code for the operations defined in the attached checklist-groups.yaml file?
+
+## Model Prompt 2
+
+A RESTful API is being developed using Node.js, Express and Typescript to match OpenAPI specfications.
+The project containing the Typescript code is structured as follows
+
+├── src
+│   ├── controllers
+│   ├── routes
+│   ├── models
+│   ├── config
+│   ├── app.ts
+├── .env
+├── package.json
+└── tsconfig.json
+
+The models directory contains the Typescript interface classes that match the component schemas defined in the OpenAPI specifications.
+
+Routes are defined using the Express Router
+
+const router = express.Router();
+router.get('/accounts', getAccounts);
+
+with Controllers creating the functions (e.g. getAccounts) that query a MySqL Database and create JSON responses.
+
+JSON Array returned by functions such as getAccounts take the form:
+
+[
+  { ... },
+  { ... }
+]
+
+Following the pattern described above code can you provide ChecklistType code for the operations defined in the attached checklist-types.yaml file?
 
 ## User with Projects
 ```
