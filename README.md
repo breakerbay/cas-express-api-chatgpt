@@ -55,7 +55,9 @@ GET /api/actiontypes/search/:query: Search for action types by name.
   * http://localhost:3000/api/checklistgroups/1
   * http://localhost:3000/api/checklistgroups/find/:query 
 * http://localhost:3000/api/checklisttypes
-  * http://localhost:3000/api/checklisttypes/1  * 
+  * http://localhost:3000/api/checklisttypes/1
+* http://localhost:3000/api/checkpointvalues
+  * http://localhost:3000/api/checkpointvalues/1
 * http://localhost:3000/api/projects
   * http://localhost:3000/api/projects/4
 * http://localhost:3000/api/users
@@ -155,7 +157,8 @@ sudo /usr/local/mysql/support-files/mysql.server start
 
 ## Model Prompt 1
 
-Following the pattern of the above code can you also provide ChecklistGroup code for the operations defined in the attached checklist-groups.yaml file?
+Following the pattern of the above code can you also provide CheckpointValue code for the operations defined in the attached checkpoint-values.yaml file?
+Use the database table "checkpointvalue" and place the database code within the controller.
 
 ## Model Prompt 2
 
