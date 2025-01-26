@@ -1,0 +1,20 @@
+###
+GET http://localhost:3000/api/world/1
+Accept: application/json
+
+<> 2025-01-26T183940.200.json
+<> 2025-01-26T183933.200.json
+
+###
+GET http://localhost:3000/api/actionCategories
+Accept: application/json
+
+<> 2025-01-26T183941.200.json
+<> 2025-01-26T183622.200.json
+
+###
+GET http://localhost:3000/api/actionCategories/1
+Accept: application/json
+
+<> 2025-01-26T183941-1.200.json
+<> 2025-01-26T183736.200.json
