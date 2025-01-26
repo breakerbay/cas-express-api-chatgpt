@@ -20,6 +20,15 @@ Created a new tsconfig.json with:
 Details at https://aka.ms/tsconfig
 ```
 
+# Typescript version
+
+The following scripts both show the version of the instance of tsc on the node_modules/bin directory which is used when the command "npm run build" is used
+
+* npm run build -- --version
+* npx tsc --version
+
+
+
 ## Project Structure
 
 ├── src
@@ -192,6 +201,60 @@ JSON Array returned by functions such as getAccounts take the form:
 ]
 
 Following the pattern described above code can you provide ChecklistType code for the operations defined in the attached checklist-types.yaml file?
+
+## TODO - Validation
+
+### express-openapi-validator
+  * https://www.npmjs.com/package/express-openapi-validator
+
+```typescript
+
+// import the openapi validator
+import * as OpenApiValidator from 'express-openapi-validator';
+
+// Install the middleware
+app.use(
+        OpenApiValidator.middleware({
+          apiSpec: './openapi.yaml',
+          validateRequests: true, // (default)
+          validateResponses: true, // false by default
+        }),
+);
+
+// Register an error handler
+
+app.use((err, req, res, next) => {
+  // format error
+  res.status(err.status || 500).json({
+    message: err.message,
+    errors: err.errors,
+  });
+});
+
+```
+### Other Libraries
+
+* TypeORM 
+  * https://typeorm.io/
+
+* openapi-generator-cli
+  * https://www.npmjs.com/package/@openapitools/openapi-generator-cli
+  * OpenAPI Generator can handle complex object graphs from a well-defined in the OpenAPI specification.
+  * Can be used with TypeORM to build the persistence layer
+
+* zod-to-openapi
+  * https://www.npmjs.com/package/@asteasolutions/zod-to-openapi
+  * https://zod.dev/ TypeScript-first schema validation with static type inference
+
+* ajv
+  * https://www.npmjs.com/package/ajv - Ajv JSON schema validator
+
+* express-validator - 
+  * https://www.npmjs.com/package/express-validator , 
+  * https://express-validator.github.io/
+  * https://github.com/express-validator/express-validator
+* 
+
 
 ## User with Projects
 ```
