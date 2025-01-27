@@ -3,6 +3,253 @@ info:
   title: Followup Actions API Definitions
   version: 1.0.0
 paths:
+  /followupactions:
+    get:
+      summary: Get all FollowupActions
+      operationId: getFollowupActions
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FollowupAction'
+    post:
+      summary: Add a FollowupAction
+      operationId: addFollowupAction
+      parameters:
+        - name: accountId
+          in: path
+          description: Account Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 22
+        - name: checkerId
+          in: path
+          description: Checker Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 22
+        - name: checkpointvalueId
+          in: path
+          description: CheckpointValue Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 165132
+      requestBody:
+        description: Add a new FollowupAction
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewFollowupAction'
+        required: true
+      responses:
+        201:
+          description: FollowupAction added to a CheckpointValue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowupAction'
+  /followupactions/{followupactionId}:
+    get:
+      summary: Get a FollowupAction
+      operationId: getFollowupAction
+      parameters:
+        - name: followupactionId
+          in: path
+          description: FollowupAction Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 302
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowupAction'
+              examples:
+                followupAction:
+                  summary: FollowupAction - Required Properties
+                  value: { "id": 302,"projectId": 299,"checkpointValueId": 165132,"name": "cp1 Followup","descr": "cp1 Followup","dateRaised": "2023-08-28 00:55:49" }
+    put:
+      summary: Updates a FollowupAction
+      operationId: updateFollowupAction
+      parameters:
+        - name: followupactionId
+          in: path
+          description: FollowupAction Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 302
+      requestBody:
+        description: Add a new FollowupAction
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewFollowupAction'
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowupAction'
+              examples:
+                followupAction:
+                  summary: FollowupAction - Required Properties
+                  value: { "id": 302,"projectId": 299,"checkpointValueId": 165132,"name": "cp1 Followup","descr": "cp1 Followup","dateRaised": "2023-08-28 00:55:49" }
+    delete:
+      summary: Delete a FollowupAction
+      operationId: deleteFollowupAction
+      parameters:
+        - name: id
+          in: path
+          description: ID of the FollowupAction to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: No Content
+          content: { }
 components:
   schemas:
-#    TODO - Complete Followup Actions API
+    NewFollowupAction:
+      type: object
+      required:
+        - projectId
+        - checkpointValueId
+        - name
+        - dateRaised
+      properties:
+        checkpointValueId:
+          type: integer
+          format: int64
+        projectId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        descr:
+          type: string
+          nullable: true
+        actionType:
+          type: integer
+          nullable: true
+        category:
+          type: integer
+          nullable: true
+        improvementActionFlag:
+          type: integer
+          nullable: true
+        note:
+          type: string
+          nullable: true
+        notificationRequiredFlag:
+          type: integer
+          nullable: true
+        notificationDoneFlag:
+          type: integer
+          nullable: true
+        approvalToActionRequiredFlag:
+          type: integer
+          nullable: true
+        approvalToActionDoneFlag:
+          type: integer
+          nullable: true
+        approvalToFixRequiredFlag:
+          type: integer
+          nullable: true
+        approvalToFixDone:
+          type: integer
+          nullable: true
+        rectificationCheckedOkFlag:
+          type: integer
+          nullable: true
+        closedOffFlag:
+          type: integer
+          nullable: true
+    FollowupAction:
+      type: object
+      required:
+        - id
+        - projectId
+        - checkpointValueId
+        - name
+        - dateRaised
+      properties:
+        id:
+          type: integer
+          format: int64
+        projectId:
+          type: integer
+          format: int64
+        checkpointValueId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        descr:
+          type: string
+          nullable: true
+        dateRaised:
+          type: string
+          format: date-time
+        approvalToFixDone:
+          type: integer
+          nullable: true
+        dateFixed:
+          type: string
+          nullable: true
+        actionType:
+          type: integer
+          nullable: true
+        category:
+          type: integer
+          nullable: true
+        improvementActionFlag:
+          type: integer
+          nullable: true
+        note:
+          type: string
+          nullable: true
+        notificationRequiredFlag:
+          type: integer
+          nullable: true
+        notificationDoneFlag:
+          type: integer
+          nullable: true
+        approvalToActionRequiredFlag:
+          type: integer
+          nullable: true
+        approvalToActionDoneFlag:
+          type: integer
+          nullable: true
+        approvalToFixRequiredFlag:
+          type: integer
+          nullable: true
+        rectificationCheckedOkFlag:
+          type: integer
+          nullable: true
+        closedOffFlag:
+          type: integer
+          nullable: true
+        dateRaisedString:
+          type: string
+          nullable: true
+        dateFixedString:
+          type: string
+          nullable: true

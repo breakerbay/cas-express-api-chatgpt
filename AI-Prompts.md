@@ -1,9 +1,9 @@
 ## Model Prompt 1
 
-Following the pattern of the above code can you also provide Checkpoint code for the operations defined in the attached checkpoints.yaml file?
-Use the database table "checkpoint" and place the database code within the controller.
+Following the pattern of the above code can you also provide FollowupAction code for the operations defined in the attached followupactions.yaml file?
+Use the database table "followupaction" and place the database code within the controller.
 Place the Typescript interface classes that match the component schemas defined in the OpenAPI specifications in the models directory.
-JSON Array returned by functions such as getCheckpoints take the form:
+JSON Array returned by functions such as getFollowupActions take the form:
 
 [
 { ... },

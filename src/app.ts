@@ -10,6 +10,7 @@ import checklistGroupRouter from './routes/checklistGroupRoutes';
 import checklistTypeRoutes from './routes/checklistTypeRoutes';
 import checkpointRoutes from './routes/checkpointRoutes';
 import checkpointValueRoutes from './routes/checkpointValueRoutes';
+import followupActionRouter from './routes/followupActionRoutes';
 import projectRouter from './routes/projectRoutes';
 import usersRoutes from './routes/users';
 
@@ -35,6 +36,7 @@ app.use('/api', checklistGroupRouter);
 app.use('/api', checkpointRoutes);
 app.use('/api', checkpointValueRoutes);
 app.use('/api', checklistTypeRoutes);
+app.use('/api', followupActionRouter);
 app.use('/api', projectRouter);
 app.use('/api', usersRoutes);
 
