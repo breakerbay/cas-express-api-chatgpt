@@ -18,3 +18,8 @@ Accept: application/json
 
 <> 2025-01-26T183941-1.200.json
 <> 2025-01-26T183736.200.json
+
+
+###
+GET http://localhost:3000/api/checkpoints
+Accept: application/json

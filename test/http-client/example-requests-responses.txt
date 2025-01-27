@@ -1,0 +1,33 @@
+POST /api/actioncategories
+Content-Type: application/json
+
+{
+  "name": "Maintenance",
+  "descr": "Tasks related to property maintenance"
+}
+
+POST /api/checkpoints
+Content-Type: application/json
+
+{
+  "copiedFromId": null,
+  "checkpointType": 1,
+  "parentId": null,
+  "checklistId": 3507,
+  "milestoneId": null,
+  "position": 3,
+  "name": "Checkpoint 1",
+  "descr": "The First Checkpoint",
+  "label": null,
+  "createdBy": 22
+}
+
+PUT /api/checkpoints/82464
+Content-Type: application/json
+
+{
+  "name": "Updated Checkpoint 1",
+  "descr": "Updated Description",
+  "modifiedBy": 22
+}
+
